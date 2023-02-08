@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,5 +25,16 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function fallback()
+    {
+        return response()->json([
+            'code' => 404,
+            'msg' => 'Page Not Found!'
+        ], 404);
     }
 }
