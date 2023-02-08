@@ -15,8 +15,8 @@ return [
     */
 
     'title' => 'Система очереди',
-    'title_prefix' => '-',
-    'title_postfix' => '=',
+    'title_prefix' => '',
+    'title_postfix' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -306,76 +306,43 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
-        ['header' => 'control_panel'],
+        ['header' => 'main_navigation'],
+        [
+            'text' => 'monitor',
+            'url' => '/monitor',
+            'icon' => 'nav-icon fas fa-columns'
+        ],
         [
             'text' => 'queue',
-            'url' => '/'
+            'url' => '/admin/reception',
+            'icon' => 'nav-icon fas fa-columns'
         ],
-        ['header' => 'account_settings'],
         [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
+            'text' => 'cabinet',
+            'url' => '/admin/cabinet',
+            'icon' => 'nav-icon fas fa-columns'
+        ],
+        [
+            'text' => 'clients',
+            'url' => '/admin/clients',
+            'icon' => 'nav-icon fas fa-columns'
+        ],
+        [
+            'text' => 'services',
+            'url' => '/admin/services',
+            'icon' => 'nav-icon fas fa-columns'
+        ],
+        ['header' => 'settings'],
+        [
+            'text' => 'categories',
+            'url'  => 'admin/categories',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'text' => 'users',
+            'url'  => 'admin/users',
             'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-                [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
-        ],
+        ]
     ],
 
     /*
