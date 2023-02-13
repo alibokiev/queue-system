@@ -45,27 +45,27 @@ Route::get('/monitor/{grad}/{size}', [MonitorController::class, 'index']);
 
 Route::middleware(['web'])->group(static function () {
     Route::namespace('Admin\AdminAuth')->group(static function () {
-        Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('brackets/admin-auth::admin/login');
+        Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/admin/login', [LoginController::class, 'login']);
 
-        Route::any('/admin/logout', [LoginController::class, 'logout'])->name('brackets/admin-auth::admin/logout');
+        Route::any('/admin/logout', [LoginController::class, 'logout'])->name('admin/logout');
 
-        Route::get('/admin/password-reset', [ForgotPasswordController::class,'showLinkRequestForm'])->name('brackets/admin-auth::admin/password/showForgotForm');
+        Route::get('/admin/password-reset', [ForgotPasswordController::class,'showLinkRequestForm'])->name('admin/password/showForgotForm');
         Route::post('/admin/password-reset/send', [ForgotPasswordController::class,'sendResetLinkEmail']);
-        Route::get('/admin/password-reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('brackets/admin-auth::admin/password/showResetForm');
+        Route::get('/admin/password-reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('admin/password/showResetForm');
         Route::post('/admin/password-reset/reset', [ResetPasswordController::class, 'reset']);
 
-        Route::get('/admin/activation/{token}', [ActivationController::class, 'activate'])->name('brackets/admin-auth::admin/activation/activate');
+        Route::get('/admin/activation/{token}', [ActivationController::class, 'activate'])->name('admin/activation/activate');
     });
 });
 
 
 /* Auto-generated admin routes */
-Route::middleware(['web', 'auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['web', 'auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/', [HomeController::class, 'index'])->name('admin.index');
 
 });
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/admin-users', [AdminUsersController::class, 'index']);
     Route::get('/admin/admin-users/{user}', [AdminUsersController::class, 'show'])->where('user', '[0-9]+');
     Route::get('/admin/admin-users/create', [AdminUsersController::class, 'create']);
@@ -77,7 +77,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 });
 
 /* Auto-generated profile routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/profile', [ProfileController::class, 'editProfile']);
     Route::post('/admin/profile', [ProfileController::class, 'updateProfile']);
     Route::get('/admin/password', [ProfileController::class, 'editPassword']);
@@ -86,7 +86,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 
 
 /* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/categories', [CategoriesController::class, 'index']);
     Route::get('/admin/categories/create', [CategoriesController::class, 'create']);
     Route::post('/admin/categories', [CategoriesController::class, 'store']);
@@ -96,13 +96,13 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
     Route::delete('/admin/categories/{category}', [CategoriesController::class, 'destroy'])->name('admin/categories/destroy');
 });
 
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(function () {
     Route::get('/admin/reception', [ReceptionController::class, 'index'])->name('admin/reception');
     Route::post('/admin/reception', [ReceptionController::class, 'store'])->name('admin/reception/store');
     Route::post('/admin/reception/skip-all', [ReceptionController::class, 'skipAll'])->name('admin/reception/skip-all');
 });
 
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(function () {
     Route::get('/admin/cabinet', [CabinetController::class, 'index'])->name('admin/cabinet');
     Route::get('/admin/cabinet/services', [CabinetController::class, 'services'])->name('admin/services');
     Route::post('/admin/cabinet/accept', [CabinetController::class, 'accept'])->name('admin/cabinet/accept');
@@ -111,7 +111,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 });
 
 /* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/clients', [ClientsController::class, 'index'])->name('admin/clients');
     Route::get('/admin/clients/create', [ClientsController::class, 'create'])->name('admin/clients/create');
     Route::post('/admin/clients', [ClientsController::class, 'store'])->name('admin/clients/store');
@@ -124,7 +124,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 
 
 /* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
     Route::get('/admin/services', [ServicesController::class, 'index'])->name('admin/services');
     Route::get('/admin/services/create', [ServicesController::class, 'create'])->name('admin/services/create');
     Route::post('/admin/services', [ServicesController::class, 'store'])->name('admin/services/store');

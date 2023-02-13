@@ -59,7 +59,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('brackets/admin-auth::admin.auth.passwords.email');
+        return view('admin.auth.passwords.email');
     }
 
     /**
@@ -95,7 +95,7 @@ class ForgotPasswordController extends Controller
     {
         $message = trans($response);
         if ($response === Password::RESET_LINK_SENT) {
-            $message = trans('brackets/admin-auth::admin.passwords.sent');
+            $message = trans('admin.passwords.sent');
         }
         return back()->with('status', $message);
     }

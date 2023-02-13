@@ -18,7 +18,7 @@ class ReceptionController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['perm:ticket']);
+//        $this->middleware(['perm:ticket']);
     }
 
     public function index()

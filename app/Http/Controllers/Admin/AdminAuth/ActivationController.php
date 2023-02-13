@@ -148,7 +148,7 @@ class ActivationController extends Controller
     {
         $message = trans($response);
         if ($response === Activation::ACTIVATED) {
-            $message = trans('brackets/admin-auth::admin.activations.activated');
+            $message = trans('admin.activations.activated');
         }
         return redirect($this->redirectPath())
             ->with('status', $message);
@@ -166,18 +166,18 @@ class ActivationController extends Controller
     {
         $message = trans($response);
         if ($response === Activation::INVALID_USER || $response === Activation::INVALID_TOKEN) {
-            $message = trans('brackets/admin-auth::admin.activations.invalid_request');
+            $message = trans('admin.activations.invalid_request');
         } else {
             if (Activation::ACTIVATION_DISABLED) {
-                $message = trans('brackets/admin-auth::admin.activations.disabled');
+                $message = trans('admin.activations.disabled');
             }
         }
         if (config('admin-auth.self_activation_form_enabled')) {
-            return redirect(route('brackets/admin-auth::admin/activation'))
+            return redirect(route('admin/activation'))
                 ->withInput($request->only('email'))
                 ->withErrors(['token' => $message]);
         } else {
-            return view('brackets/admin-auth::admin.auth.activation.error')->withErrors(
+            return view('admin.auth.activation.error')->withErrors(
                 ['token' => $message]
             );
         }

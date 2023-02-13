@@ -77,7 +77,7 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, $token = null)
     {
-        return view('brackets/admin-auth::admin.auth.passwords.reset')->with(
+        return view('admin.auth.passwords.reset')->with(
             ['token' => $token, 'email' => $request->email]
         );
     }
@@ -141,7 +141,7 @@ class ResetPasswordController extends Controller
     {
         $message = trans($response);
         if ($response === Password::PASSWORD_RESET) {
-            $message = trans('brackets/admin-auth::admin.passwords.reset');
+            $message = trans('admin.passwords.reset');
         }
         return redirect($this->redirectPath())
             ->with('status', $message);
@@ -159,13 +159,13 @@ class ResetPasswordController extends Controller
     {
         $message = trans($response);
         if ($response === Password::INVALID_TOKEN) {
-            $message = trans('brackets/admin-auth::admin.passwords.invalid_token');
+            $message = trans('admin.passwords.invalid_token');
         } else {
             if ($response === Password::INVALID_USER) {
-                $message = trans('brackets/admin-auth::admin.passwords.invalid_user');
+                $message = trans('admin.passwords.invalid_user');
             } else {
                 if ($response === Password::INVALID_PASSWORD) {
-                    $message = trans('brackets/admin-auth::admin.passwords.invalid_password');
+                    $message = trans('admin.passwords.invalid_password');
                 }
             }
         }
