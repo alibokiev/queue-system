@@ -9,7 +9,7 @@
 
     <title>Очередь</title>
 
-    <link href="{{ mix('/css/admin.css') }}" rel="stylesheet">
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     <style>
         html {
             font-size: {{$size}}px;
@@ -50,7 +50,7 @@
 </div>
 
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-<script src="{{ mix('/js/admin.js') }}"></script>
+<script src="{{ mix('/js/app.js') }}"></script>
 </body>
 
 </html>

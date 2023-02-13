@@ -134,3 +134,13 @@ Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(sta
     Route::delete('/admin/services/{service}', [ServicesController::class, 'destroy'])->name('admin/services/destroy');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', function() {
+    return view('home');
+})->name('home')->middleware('auth');

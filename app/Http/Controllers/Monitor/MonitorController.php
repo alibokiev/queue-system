@@ -31,7 +31,7 @@ class MonitorController extends Controller
                     ->whereIn('status_id', [1, 2])
                     ->with(['status']);
             }, 'category'])
-            ->where('users.id', '<>', 1)
+//            ->where('users.id', '<>', 1)
             ->get();
 
         if ($request->ajax()) {

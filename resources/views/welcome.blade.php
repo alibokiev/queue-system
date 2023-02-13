@@ -1,19 +1,92 @@
-@extends('adminlte::page')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('title', 'Dashboard')
+    <title></title>
 
-@section('content_header')
-    <h1>Dashboard</h1>
-@stop
+    <!-- Fonts -->
 
-@section('content')
-    <p>Welcome to this beautiful admin panel.</p>
-@stop
 
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
+    <!-- Styles -->
+    <style>
+        html, body {
+            background-color: #fff;
+            color: #636b6f;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 200;
+            height: 100vh;
+            margin: 0;
+        }
 
-@section('js')
-    <script> console.log('Hi!'); </script>
-@stop
+        .full-height {
+            height: 100vh;
+        }
+
+        .flex-center {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .position-ref {
+            position: relative;
+        }
+
+        .top-right {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 84px;
+        }
+
+        .links > a {
+            color: #636b6f;
+            padding: 0 25px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .1rem;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .m-b-md {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="flex-center position-ref full-height">
+    @if (Route::has('brackets/admin-auth::admin/login'))
+        <div class="top-right links">
+            @auth
+                <a href="{{ url('/admin') }}">Главная</a>
+            @else
+                <a href="{{ route('brackets/admin-auth::admin/login') }}">Войти</a>
+
+                {{--@if (Route::has('register'))--}}
+                {{--<a href="{{ route('register') }}">Register</a>--}}
+                {{--@endif--}}
+            @endauth
+        </div>
+    @endif
+
+    <div class="content">
+        <div class="title m-b-md">
+            {{--<img src="{{asset('images/logo.png')}}" alt="">--}}
+            Очередь
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>
