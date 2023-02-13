@@ -1,6 +1,6 @@
 <?php
 
-use Brackets\AdminAuth\Models\AdminUser;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Config\Repository;
 use Illuminate\Database\Migrations\Migration;
@@ -10,45 +10,43 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Class FillDefaultAdminUserAndPermissions
  */
-class FillDefaultAdminUserAndPermissions extends Migration
+return new class extends Migration
 {
     /**
      * @var Repository|mixed
      */
-    protected $guardName;
+    protected mixed $guardName;
     /**
      * @var mixed
      */
-    protected $userClassName;
-    /**
-     * @var
-     */
+    protected mixed $userClassName;
+
     protected $userTable;
 
     /**
      * @var array
      */
-    protected $permissions;
+    protected array $permissions;
     /**
      * @var array
      */
-    protected $roles;
+    protected array $roles;
     /**
      * @var array
      */
-    protected $users;
+    protected array $users;
 
     /**
      * @var string
      */
-    protected $password = '12345678';
+    protected string $password = '12345678';
 
     /**
      * FillDefaultAdminUserAndPermissions constructor.
      */
     public function __construct()
     {
-        $this->guardName = config('admin-auth.defaults.guard');
+        $this->guardName = config('auth.defaults.guard');
         $providerName = config('auth.guards.' . $this->guardName . '.provider');
         $provider = config('auth.providers.' . $providerName);
         if ($provider['driver'] === 'eloquent') {
@@ -256,7 +254,6 @@ class FillDefaultAdminUserAndPermissions extends Migration
             foreach ($this->users as $user) {
                 $userItem = DB::table($this->userTable)->where('email', $user['email'])->first();
                 if ($userItem !== null) {
-                    AdminUser::find($userItem->id)->media()->delete();
                     DB::table($this->userTable)->where('id', $userItem->id)->delete();
                     DB::table('model_has_permissions')->where([
                         'model_id' => $userItem->id,
@@ -293,4 +290,4 @@ class FillDefaultAdminUserAndPermissions extends Migration
         });
         app()['cache']->forget(config('permission.cache.key'));
     }
-}
+};

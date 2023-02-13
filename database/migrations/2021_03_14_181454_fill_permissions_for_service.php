@@ -5,7 +5,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class FillPermissionsForService extends Migration
+return new class extends Migration
 {
     /**
      * @var Repository|mixed
@@ -25,7 +25,7 @@ class FillPermissionsForService extends Migration
      */
     public function __construct()
     {
-        $this->guardName = config('admin-auth.defaults.guard');
+        $this->guardName = config('auth.defaults.guard');
 
         $permissions = collect([
             'admin.service',
@@ -126,4 +126,4 @@ class FillPermissionsForService extends Migration
         });
         app()['cache']->forget(config('permission.cache.key'));
     }
-}
+};

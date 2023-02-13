@@ -4,23 +4,23 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTicketsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->string('number');
             $table->text('comment')->nullable();
 
             $table->integer('category_id')->unsigned();
             $table->integer('status_id')->unsigned();
-            $table->integer('user_id')->nullable()->unsigned();
+            $table->bigInteger('user_id')->nullable()->unsigned();
 
             $table->timestamp('created_at');
             $table->timestamp('invited_at')->nullable();
@@ -37,8 +37,8 @@ class CreateTicketsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('tickets');
     }
-}
+};

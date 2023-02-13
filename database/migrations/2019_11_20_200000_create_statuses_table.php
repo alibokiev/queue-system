@@ -5,14 +5,14 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStatusesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('statuses', function (Blueprint $table) {
             $table->increments('id');
@@ -55,4 +55,4 @@ class CreateStatusesTable extends Migration
     {
         Schema::dropIfExists('statuses');
     }
-}
+};

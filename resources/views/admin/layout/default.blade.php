@@ -1,45 +1,23 @@
-@extends('admin.layout.master')
+@extends('adminlte::page')
 
-@section('header')
-    @include('admin.partials.header')
-@endsection
+@section('content_header')
+    @if(1)
+        @yield('content_header')
+    @endif
 
-@section('content')
+    <h1>Dashboard</h1>
+@stop
 
-    <div class="app-body">
+@yield('body')
 
-        @if(View::exists('admin.layout.sidebar'))
-            @include('admin.layout.sidebar')
-        @endif
+@section('title', config('adminlte.title'))
 
-        <main class="main">
+@section('css')
+    <link rel="stylesheet" href=" {{ mix('/css/app.css') }} ">
+    @yield('css')
+@stop
 
-            {!! Breadcrumbs::render() !!}
-
-            <div class="container-fluid" id="app" :class="{'loading': loading}" style="margin-top: 1.5rem">
-                <div class="modals">
-                    <v-dialog/>
-                </div>
-                <div>
-                    <notifications position="bottom right" :duration="2000" />
-                </div>
-
-                @yield('body')
-            </div>
-        </main>
-    </div>
-
-    <footer class="app-footer">
-        <div class="container-fluid">
-            <div class="container-xl">
-            <span class="pull-right">
-                {{date('Y')}}
-            </span>
-            </div>
-        </div>
-    </footer>
-@endsection
-
-@section('bottom-scripts')
-    @parent
-@endsection
+@section('js')
+    <script src="{{ mix('/js/app.js') }}"></script>
+    @yield('js')
+@stop

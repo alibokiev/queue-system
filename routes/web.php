@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\{AdminAuth\ActivationController,
     ReceptionController,
     ServicesController,
     CabinetController};
+use App\Http\Controllers\Monitor\MonitorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -38,9 +39,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/monitor/', 'Monitor\MonitorController@index')->name('monitor');
-Route::get('/monitor/{grad}', 'Monitor\MonitorController@index');
-Route::get('/monitor/{grad}/{size}', 'Monitor\MonitorController@index');
+Route::get('/monitor/', [MonitorController::class, 'index'])->name('monitor');
+Route::get('/monitor/{grad}', [MonitorController::class, 'index']);
+Route::get('/monitor/{grad}/{size}', [MonitorController::class, 'index']);
 
 Route::middleware(['web'])->group(static function () {
     Route::namespace('Admin\AdminAuth')->group(static function () {

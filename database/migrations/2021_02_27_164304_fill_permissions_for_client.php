@@ -5,7 +5,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class FillPermissionsForClient extends Migration
+return new class extends Migration
 {
     /**
      * @var Repository|mixed
@@ -126,4 +126,4 @@ class FillPermissionsForClient extends Migration
 //        });
 //        app()['cache']->forget(config('permission.cache.key'));
     }
-}
+};
