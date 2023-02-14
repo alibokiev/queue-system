@@ -5,7 +5,9 @@
  */
 
 import './bootstrap';
-import './admin/admin';
+import './../../public/vendor/adminlte/dist/js/adminlte.min';
+import './../../public/vendor/jquery/jquery.min';
+import './../../public/vendor/overlayScrollbars/js/jquery.overlayScrollbars.min';
 
 window.Vue = require('vue');
 

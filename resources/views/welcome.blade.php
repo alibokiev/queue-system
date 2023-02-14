@@ -65,16 +65,12 @@
 </head>
 <body>
 <div class="flex-center position-ref full-height">
-    @if (Route::has('brackets/admin-auth::admin/login'))
+    @if (Route::has('login'))
         <div class="top-right links">
             @auth
                 <a href="{{ url('/admin') }}">Главная</a>
             @else
-                <a href="{{ route('brackets/admin-auth::admin/login') }}">Войти</a>
-
-                {{--@if (Route::has('register'))--}}
-                {{--<a href="{{ route('register') }}">Register</a>--}}
-                {{--@endif--}}
+                <a href="{{ route('login') }}">Войти</a>
             @endauth
         </div>
     @endif

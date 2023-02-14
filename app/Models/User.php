@@ -52,6 +52,21 @@ class User extends Authenticatable
 
     protected $appends = ['full_name', 'resource_url'];
 
+    public function adminlte_image(): string
+    {
+        return 'https://picsum.photos/300/300';
+    }
+
+    public function adminlte_desc(): string
+    {
+        return $this->bio ?? '';
+    }
+
+    public function adminlte_profile_url(): string
+    {
+        return '#';
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

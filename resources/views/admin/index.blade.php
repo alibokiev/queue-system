@@ -1,8 +1,65 @@
-@extends('admin.layout.default')
+@extends('adminlte::page')
 
 @section('title', 'Главная')
 
-@section('body')
+@section('content')
+{{--    {{ dd($totalToday, $ticketsByCategory, $categories, $users, $alltotal, $ticketsByDate, $y, $m) }}--}}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ $totalToday }}</h3>
+                        <p>Всего Сегодня</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ $categories }}<sup style="font-size: 20px">%</sup></h3>
+                        <p>Категорий</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ $users }}</h3>
+                        <p>Сотрудников</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ $alltotal }}</h3>
+                        <p>Всего</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <div class="animated fadeIn">
 
@@ -51,7 +108,7 @@
                                         <div class="callout callout-info">
                                             <small class="text-muted">Всего сегодня</small>
                                             <br>
-                                            <strong class="h4">{{$totalToday}}</strong>
+                                            <strong class="h4">{{ $totalToday }}</strong>
                                             <div class="chart-wrapper">
                                                 <canvas id="sparkline-chart-1" width="100" height="30"></canvas>
                                             </div>
@@ -173,4 +230,4 @@
 
     </div>
 
-@endsection
+@stop

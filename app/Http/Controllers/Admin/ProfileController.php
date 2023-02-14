@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +47,7 @@ class ProfileController extends Controller
      * Show the form for editing logged user profile.
      *
      * @param Request $request
-     * @return Response
+     * @return Application|Factory|View
      */
     public function editProfile(Request $request)
     {
@@ -73,7 +76,7 @@ class ProfileController extends Controller
             'last_name' => ['nullable', 'string'],
             'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($this->adminUser->getKey(), $this->adminUser->getKeyName()), 'string'],
             'language' => ['sometimes', 'string'],
-            
+
         ]);
 
         // Sanitize input
@@ -82,7 +85,7 @@ class ProfileController extends Controller
             'last_name',
             'email',
             'language',
-            
+
         ]);
 
         // Update changed values AdminUser
@@ -126,13 +129,13 @@ class ProfileController extends Controller
         // Validate the request
         $this->validate($request, [
             'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
-            
+
         ]);
 
         // Sanitize input
         $sanitized = $request->only([
             'password',
-            
+
         ]);
 
         //Modify input, set hashed password

@@ -1,10 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AdminAuth\ActivationController,
-    AdminAuth\ForgotPasswordController,
-    AdminAuth\LoginController,
-    AdminAuth\ResetPasswordController,
-    AdminUsersController,
+use App\Http\Controllers\Admin\{AdminUsersController,
     CategoriesController,
     ClientsController,
     HomeController,
@@ -12,6 +8,12 @@ use App\Http\Controllers\Admin\{AdminAuth\ActivationController,
     ReceptionController,
     ServicesController,
     CabinetController};
+use App\Http\Controllers\Auth\ConfirmPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Monitor\MonitorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -33,11 +35,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/monitor/', [MonitorController::class, 'index'])->name('monitor');
 Route::get('/monitor/{grad}', [MonitorController::class, 'index']);
@@ -48,14 +50,22 @@ Route::middleware(['web'])->group(static function () {
         Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/admin/login', [LoginController::class, 'login']);
 
-        Route::any('/admin/logout', [LoginController::class, 'logout'])->name('admin/logout');
+        Route::any('/admin/logout', [LoginController::class, 'logout'])->name('logout');
 
-        Route::get('/admin/password-reset', [ForgotPasswordController::class,'showLinkRequestForm'])->name('admin/password/showForgotForm');
-        Route::post('/admin/password-reset/send', [ForgotPasswordController::class,'sendResetLinkEmail']);
-        Route::get('/admin/password-reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('admin/password/showResetForm');
-        Route::post('/admin/password-reset/reset', [ResetPasswordController::class, 'reset']);
+        Route::get('/admin/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/admin/register', [RegisterController::class, 'register']);
 
-        Route::get('/admin/activation/{token}', [ActivationController::class, 'activate'])->name('admin/activation/activate');
+        Route::get('/admin/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/admin/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/admin/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/admin/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+        Route::get('/admin/password/confirm', [ConfirmPasswordController::class, 'showConfirmForm'])->name('password.confirm');
+        Route::post('/admin/password/confirm', [ConfirmPasswordController::class, 'confirm']);
+
+        Route::get('/admin/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+        Route::get('/admin/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+        Route::post('/admin/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
     });
 });
 
@@ -133,14 +143,3 @@ Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(sta
     Route::post('/admin/services/{service}', [ServicesController::class, 'update'])->name('admin/services/update');
     Route::delete('/admin/services/{service}', [ServicesController::class, 'destroy'])->name('admin/services/destroy');
 });
-
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', function() {
-    return view('home');
-})->name('home')->middleware('auth');
