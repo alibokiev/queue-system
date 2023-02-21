@@ -49,7 +49,7 @@ class ReceptionController extends Controller
 
         $user = User::query()->findOrFail($request->input('user_id'));
 
-        $ticket = Ticket::create([
+        $ticket = Ticket::query()->create([
             'service_id' => $service->id,
             'created_at' => Carbon::now(),
             'status_id' => 1,
