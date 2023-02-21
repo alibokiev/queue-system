@@ -1,4 +1,4 @@
-@extends('admin.layout.default')
+@extends('adminlte::page')
 
 @section('title', 'Добавить услугу')
 

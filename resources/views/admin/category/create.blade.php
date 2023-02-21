@@ -1,4 +1,4 @@
-@extends('admin.layout.default')
+@extends('adminlte::page')
 
 @section('title',"Новая категория")
 
@@ -7,14 +7,14 @@
     <div class="container-xl">
 
                 <div class="card">
-        
+
         <category-form
             :action="'{{ url('admin/categories') }}'"
             v-cloak
             inline-template>
 
             <form class="form-horizontal form-create" method="post" @submit.prevent="onSubmit" :action="this.action" novalidate>
-                
+
                 <div class="card-header">
                     <i class="fa fa-plus"></i> Новая категория
                 </div>
@@ -51,14 +51,14 @@
 
 
                 </div>
-                                
+
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary" :disabled="submiting">
                         <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-download'"></i>
                         Добавить
                     </button>
                 </div>
-                
+
             </form>
 
         </category-form>
@@ -67,5 +67,5 @@
 
         </div>
 
-    
+
 @endsection

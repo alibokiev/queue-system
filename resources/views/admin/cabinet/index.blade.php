@@ -1,8 +1,8 @@
-@extends('admin.layout.default')
+@extends('adminlte::page')
 
 @section('title', 'Личный кабинет')
 
-@section('body')
+@section('content')
 
     <div class="animated fadeIn">
 

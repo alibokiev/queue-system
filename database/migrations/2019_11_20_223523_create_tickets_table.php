@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('comment')->nullable();
 
             $table->integer('category_id')->unsigned();
+            $table->integer('service_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->bigInteger('user_id')->nullable()->unsigned();
 
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->timestamp('completed_at')->nullable();
 
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->foreign('user_id')->references('id')->on('users');
         });

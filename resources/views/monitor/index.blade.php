@@ -9,7 +9,7 @@
 
     <title>Очередь</title>
 
-    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <style>
         html {
             font-size: {{$size}}px;
@@ -41,7 +41,7 @@
 </head>
 
 <body class="app">
-<div class="app-body">
+<div id="app">
     <main class="main">
         <div class="container" id="app" :class="{'loading': loading}" style="margin-top: 1.5rem">
             <monitor :monitor="true" :categories="{{$categories}}" :users="{{$users}}"></monitor>
@@ -50,7 +50,7 @@
 </div>
 
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-<script src="{{ mix('/js/app.js') }}"></script>
+<script src="{{ asset('/js/app.js') }}"></script>
 </body>
 
 </html>

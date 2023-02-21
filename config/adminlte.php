@@ -130,11 +130,11 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
+    'usermenu_image' => true,
     'usermenu_desc' => false,
-    'usermenu_profile_url' => false,
+    'usermenu_profile_url' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -273,9 +273,9 @@ return [
     |
     */
 
-    'enabled_laravel_mix' => false,
-    'laravel_mix_css_path' => 'css/app.css',
-    'laravel_mix_js_path' => 'js/app.js',
+    'enabled_laravel_mix' => true,
+    'laravel_mix_css_path' => '/css/app.css',
+    'laravel_mix_js_path' => '/js/app.js',
 
     /*
     |--------------------------------------------------------------------------
@@ -310,38 +310,38 @@ return [
         [
             'text' => 'monitor',
             'url' => '/monitor',
-            'icon' => 'nav-icon fas fa-columns'
+            'icon' => 'nav-icon fas fa-tv'
         ],
         [
             'text' => 'queue',
             'url' => '/admin/reception',
-            'icon' => 'nav-icon fas fa-columns'
+            'icon' => 'nav-icon fas fa-users'
         ],
         [
             'text' => 'cabinet',
             'url' => '/admin/cabinet',
-            'icon' => 'nav-icon fas fa-columns'
+            'icon' => 'nav-icon fas fa-briefcase'
         ],
         [
             'text' => 'clients',
             'url' => '/admin/clients',
-            'icon' => 'nav-icon fas fa-columns'
+            'icon' => 'nav-icon fas fa-user-friends'
         ],
         [
             'text' => 'services',
             'url' => '/admin/services',
-            'icon' => 'nav-icon fas fa-columns'
+            'icon' => 'nav-icon fas fa-sharp fa-solid fa-hand-holding-heart'
         ],
         ['header' => 'settings'],
         [
             'text' => 'categories',
             'url'  => 'admin/categories',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw ion-android-list',
         ],
         [
             'text' => 'users',
             'url'  => 'admin/users',
-            'icon' => 'fas fa-fw fa-lock',
+            'icon' => 'fas fa-fw fa-user',
         ]
     ],
 

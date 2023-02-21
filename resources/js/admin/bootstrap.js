@@ -1,20 +1,3 @@
-import axios from 'axios';
-import _ from 'lodash';
-import Vue from 'vue';
-import jQuery from 'jquery';
-import moment from 'moment';
-
-window.$ = window.jQuery = jQuery;
-window.Vue = Vue;
-window._ = _;
-window.axios = axios;
-window.moment = moment;
-
-window.moment.locale('ru');
-
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
@@ -29,20 +12,6 @@ if (token) {
 } else {
 	console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
-
-window.Event = new class {
-    constructor() {
-        this.vue = new Vue();
-    }
-
-    fire(event, data = null) {
-        this.vue.$emit(event, data);
-    }
-
-    listen(event, callback) {
-        this.vue.$on(event, callback);
-    }
-};
 
 Vue.mixin({
     methods: {

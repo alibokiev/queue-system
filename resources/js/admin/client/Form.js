@@ -5,7 +5,7 @@ Vue.component('client-form', {
     data: function() {
         return {
             form: {
-                
+
             }
         }
     }

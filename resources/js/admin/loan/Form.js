@@ -21,7 +21,7 @@ Vue.component('loan-form', {
                 profit:  '' ,
                 created_by_admin_user_id:  '' ,
                 updated_by_admin_user_id:  '' ,
-                
+
             }
         }
     }

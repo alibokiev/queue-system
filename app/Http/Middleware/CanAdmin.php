@@ -21,14 +21,14 @@ class CanAdmin
      *
      * @var string
      */
-    protected $guard = 'admin';
+    protected mixed $guard = 'admin';
 
     /**
      * CanAdmin constructor.
      */
     public function __construct()
     {
-        $this->guard = config('admin-auth.defaults.guard');
+        $this->guard = config('auth.defaults.guard');
     }
 
     /**
@@ -38,7 +38,7 @@ class CanAdmin
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (Auth::guard($this->guard)->check()) {
             return $next($request);
@@ -47,7 +47,7 @@ class CanAdmin
         if (!Auth::guard($this->guard)->check()) {
             return redirect()->guest('/admin/login');
         } else {
-            throw new UnauthorizedException('Unathorized');
+            throw new UnauthorizedException('Unauthorized!');
         }
     }
 }

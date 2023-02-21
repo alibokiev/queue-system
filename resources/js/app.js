@@ -1,41 +1,64 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 import './bootstrap';
+import { createApp } from 'vue';
+
+const Vue = createApp({})
+
 import './../../public/vendor/adminlte/dist/js/adminlte.min';
 import './../../public/vendor/jquery/jquery.min';
 import './../../public/vendor/overlayScrollbars/js/jquery.overlayScrollbars.min';
+import './../../public/vendor/bootstrap/js/bootstrap.bundle.min';
 
-window.Vue = require('vue');
+import './admin/bootstrap';
+import './admin/app-components/bootstrap';
+import './admin/index';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
 
-/**
- * Next, we will create a fresh Vue application instance. You may then begin
- * registering components with the application instance so they are ready
- * to use in your application's views. An example is included for you.
- */
+import flatPickr from 'vue-flatpickr-component';
+import QuillEditor from '@vueup/vue-quill';
+import Notifications from '@kyvg/vue3-notification';
+import Multiselect from 'vue-multiselect';
+import 'flatpickr/dist/flatpickr.css';
+import VueCookie from 'vue-cookie';
+import VModal from 'vue3-simple-dialog'
+import Badge from './admin/ui/Badge.vue';
+import Monitor from "./admin/monitor/Monitor.vue";
+import PillBadge from './admin/ui/PillBadge.vue';
+import Reception from './admin/reception/Reception';
+import TestPrint from './admin/reception/Test.vue';
+import Cabinet from './admin/cabinet/Cabinet.vue';
+import VueHtmlToPaper from 'vue-html-to-paper';
 
+const options = {
+    name: '_blank',
+    specs: [
+        'fullscreen=no',
+        'titlebar=no',
+        'scrollbars=no'
+    ],
+    styles: [
+        // 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+        // 'https://unpkg.com/kidlat-css/css/kidlat.css'
+    ]
+}
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+Vue.use(VModal, { dialog: true, dynamic: true, injectModalsContainer: true });
+Vue.use(VueHtmlToPaper, options);
+Vue.use(QuillEditor);
+Vue.use(Notifications);
+Vue.use(VueCookie);
+Vue.use('test-print', TestPrint);
+
+Vue.component('monitor', Monitor);
+Vue.component('multiselect', Multiselect);
+Vue.component('datetime', flatPickr);
+Vue.component('monitor', Monitor);
+Vue.component('reception', Reception);
+Vue.component('cabinet', Cabinet);
+Vue.component('badge', Badge);
+Vue.component('pill-badge', PillBadge);
 
 // Object.entries(import.meta.glob('./**/*.vue', { eager: true })).forEach(([path, definition]) => {
-//     app.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
+//     Vue.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
 // });
 
-/**
- * Finally, we will attach the application instance to a HTML element with
- * an "id" attribute of "app". This element is included with the "auth"
- * scaffolding. Otherwise, you will need to add an element yourself.
- */
-
-const app = new Vue({
-    el: '#app',
-});
+Vue.mount('#app')

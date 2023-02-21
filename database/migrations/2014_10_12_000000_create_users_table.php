@@ -21,15 +21,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('activated')->default(false);
             $table->boolean('forbidden')->default(false);
             $table->string('language', 2)->default('en');
             $table->integer('category_id')->nullable()->unsigned();
+            $table->string('service_center_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();
             $table->softDeletes();
             $table->rememberToken();
-            $table->unique(['email', 'deleted_at']);
+            $table->unique(['email']);
         });
     }
 

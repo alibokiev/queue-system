@@ -16,4 +16,12 @@ return [
     'important'                     => 'Важно',
     'warning'                       => 'Внимание',
     'information'                   => 'Информация',
+    'queue'                         => 'Очередь',
+    'monitor'                       => 'Монитор',
+    'cabinet'                       => 'Кабинет',
+    'clients'                       => 'Клиенты',
+    'services'                      => 'Сервисы',
+    'categories'                    => 'Категории',
+    'users'                         => 'Пользователи',
+    'settings'                      => 'Настройки'
 ];

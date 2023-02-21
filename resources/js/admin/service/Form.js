@@ -9,7 +9,7 @@ Vue.component('service-form', {
                 boj:  '' ,
                 hizmat:  '' ,
                 kogaz:  '' ,
-                
+
             }
         }
     }

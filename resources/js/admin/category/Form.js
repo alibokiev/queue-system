@@ -7,7 +7,7 @@ Vue.component('category-form', {
             form: {
                 name:  '' ,
                 color:  '' ,
-                
+
             }
         }
     }

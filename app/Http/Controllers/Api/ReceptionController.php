@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Client;
+use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -34,22 +35,29 @@ class ReceptionController extends Controller
 
     public function store(Request $request)
     {
-        $client = Client::firstOrCreate(
+        $request->validate([
+            'phone' => 'required',
+            'service_id' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        $client = Client::query()->firstOrCreate(
             ['phone' => $request->input('phone')]
         );
 
-        $category = Category::findOrFail($request->input('category_id'));
+        $service = Service::query()->findOrFail($request->input('service_id'));
 
-        $user = User::findOrFail($request->input('user_id'));
+        $user = User::query()->findOrFail($request->input('user_id'));
 
         $ticket = Ticket::create([
-            'category_id' => $category->id,
+            'service_id' => $service->id,
             'created_at' => Carbon::now(),
             'status_id' => 1,
             'user_id' => $user->id,
             'comment' => '',
             'client_id' => $client->id,
-            'number' => Ticket::getNumber($category),
+            'number' => Ticket::getNumber($service),
+            'category_id' => 1,
         ]);
 
         return response()->json([

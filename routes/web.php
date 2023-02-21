@@ -7,7 +7,8 @@ use App\Http\Controllers\Admin\{AdminUsersController,
     ProfileController,
     ReceptionController,
     ServicesController,
-    CabinetController};
+    CabinetController,
+    UsersController};
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -76,14 +77,14 @@ Route::middleware(['web', 'auth:' . config('auth.defaults.guard'), 'admin'])->gr
 
 });
 Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
-    Route::get('/admin/admin-users', [AdminUsersController::class, 'index']);
-    Route::get('/admin/admin-users/{user}', [AdminUsersController::class, 'show'])->where('user', '[0-9]+');
-    Route::get('/admin/admin-users/create', [AdminUsersController::class, 'create']);
-    Route::post('/admin/admin-users', [AdminUsersController::class, 'store']);
-    Route::get('/admin/admin-users/{adminUser}/edit', [AdminUsersController::class, 'edit'])->name('admin/admin-users/edit');
-    Route::post('/admin/admin-users/{adminUser}', [AdminUsersController::class, 'update'])->name('admin/admin-users/update');
-    Route::delete('/admin/admin-users/{adminUser}', [AdminUsersController::class, 'destroy'])->name('admin/admin-users/destroy');
-    Route::get('/admin/admin-users/{adminUser}/resend-activation', [AdminUsersController::class, 'resendActivationEmail'])->name('admin/admin-users/resendActivationEmail');
+    Route::get('/admin/users', [UsersController::class, 'index']);
+    Route::get('/admin/users/{user}', [UsersController::class, 'show'])->where('user', '[0-9]+');
+    Route::get('/admin/users/create', [UsersController::class, 'create']);
+    Route::post('/admin/users', [UsersController::class, 'store']);
+    Route::get('/admin/users/{adminUser}/edit', [UsersController::class, 'edit'])->name('admin/admin-users/edit');
+    Route::post('/admin/users/{adminUser}', [UsersController::class, 'update'])->name('admin/admin-users/update');
+    Route::delete('/admin/users/{adminUser}', [UsersController::class, 'destroy'])->name('admin/admin-users/destroy');
+    Route::get('/admin/users/{adminUser}/resend-activation', [UsersController::class, 'resendActivationEmail'])->name('admin/admin-users/resendActivationEmail');
 });
 
 /* Auto-generated profile routes */

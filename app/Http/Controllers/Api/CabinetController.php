@@ -7,8 +7,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class CabinetController extends Controller
 {
@@ -22,7 +25,7 @@ class CabinetController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return array
      */
     public function index(Request $request)
     {
@@ -40,21 +43,18 @@ class CabinetController extends Controller
             ->where('status_id', 2)
             ->first();
 
-        $completedTickets = Ticket::where('created_at', '>=', Carbon::parse($today))
+        $completedTickets = Ticket::query()->where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 3)
             ->where('user_id', $user->id)
             ->with(['status'])
             ->orderBy('completed_at', 'desc')
             ->get();
 
-        $data = compact('today', 'user', 'category', 'ticket', 'completedTickets');
-
-        return $data;
-
+        return compact('today', 'user', 'category', 'ticket', 'completedTickets');
     }
 
     /**
-     * @return array
+     * @return JsonResponse
      */
     public function accept()
     {
