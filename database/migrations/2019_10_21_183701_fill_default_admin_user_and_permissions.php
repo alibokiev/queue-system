@@ -117,9 +117,9 @@ return new class extends Migration
                 'email' => 'admin@queue.tj',
                 'password' => Hash::make($this->password),
                 'remember_token' => null,
+                'service_center_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'activated' => true,
                 'roles' => [
                     [
                         'name' => 'SuperAdmin',
