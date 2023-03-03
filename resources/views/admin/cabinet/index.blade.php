@@ -9,13 +9,7 @@
         <div class="card">
             <div class="card-header">
                 <i class="icon-briefcase"></i>
-                {{--                <i class="icon-feed"></i>--}}
-                {{--                <i class="icon-action-redo"></i>--}}
                 {{$user->category->name}}
-                {{--                ---}}
-                {{--                <i class="icon-user-following"></i>--}}
-                {{--                <i class="icon-ban"></i>--}}
-                {{--                {{$user->full_name}}--}}
             </div>
             <div class="card-body">
 

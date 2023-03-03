@@ -10,8 +10,10 @@ use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\Client;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class CabinetController extends Controller
 {
@@ -24,9 +26,10 @@ class CabinetController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return array|Factory|View
      */
-    public function index(Request $request)
+    public function index(Request $request): Factory|array|View
     {
         $user = Auth::user();
 
@@ -71,7 +74,7 @@ class CabinetController extends Controller
     /**
      * @return array
      */
-    public function accept()
+    public function accept(): array
     {
         $user = Auth::user();
         $today = Carbon::now()->toDateString() . " 00:00:00";

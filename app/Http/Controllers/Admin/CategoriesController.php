@@ -10,10 +10,13 @@ use App\Http\Requests\Admin\Category\UpdateCategory;
 use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
-use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
@@ -27,21 +30,11 @@ class CategoriesController extends Controller
      * Display a listing of the resource.
      *
      * @param IndexCategory $request
-     * @return Response|array
+     * @return array|Application|Factory|View|Response
      */
-    public function index(IndexCategory $request)
+    public function index(IndexCategory $request): View|Factory|Response|array|Application
     {
-        // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Category::class)->processRequestAndGet(
-            // pass the request with params
-            $request,
-
-            // set columns to query
-            ['id', 'name', 'color'],
-
-            // set columns to searchIn
-            ['id', 'name', 'color']
-        );
+        $data = Category::query()->get();
 
         if ($request->ajax()) {
             if ($request->has('bulk')) {
@@ -58,10 +51,9 @@ class CategoriesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @throws AuthorizationException
-     * @return Response
+     * @return Application|Factory|View
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         //$this->authorize('admin.category.create');
 
@@ -72,9 +64,9 @@ class CategoriesController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreCategory $request
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function store(StoreCategory $request)
+    public function store(StoreCategory $request): Response|array|Redirector|Application|RedirectResponse
     {
         // Sanitize input
         $sanitized = $request->validated();
@@ -90,30 +82,14 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param Category $category
-     * @throws AuthorizationException
-     * @return void
-     */
-    public function show(Category $category)
-    {
-        //$this->authorize('admin.category.show', $category);
-
-        // TODO your code goes here
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param Category $category
-     * @throws AuthorizationException
-     * @return Response
+     * @return Application|Factory|View|Response
      */
-    public function edit(Category $category)
+    public function edit(Category $category): View|Factory|Response|Application
     {
         //$this->authorize('admin.category.edit', $category);
-
 
         return view('admin.category.edit', [
             'category' => $category,
@@ -125,9 +101,9 @@ class CategoriesController extends Controller
      *
      * @param UpdateCategory $request
      * @param Category $category
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function update(UpdateCategory $request, Category $category)
+    public function update(UpdateCategory $request, Category $category): Response|array|Redirector|Application|RedirectResponse
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
@@ -150,10 +126,10 @@ class CategoriesController extends Controller
      *
      * @param DestroyCategory $request
      * @param Category $category
+     * @return bool|RedirectResponse|Response
      * @throws Exception
-     * @return Response|bool
      */
-    public function destroy(DestroyCategory $request, Category $category)
+    public function destroy(DestroyCategory $request, Category $category): Response|bool|RedirectResponse
     {
         $users = User::where('category_id', $category->id)->get();
 
@@ -177,8 +153,7 @@ class CategoriesController extends Controller
      * Remove the specified resources from storage.
      *
      * @param DestroyCategory $request
-     * @throws Exception
-     * @return Response|bool
+     * @return Response
      */
     public function bulkDestroy(DestroyCategory $request) : Response
     {
