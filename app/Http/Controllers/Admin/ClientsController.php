@@ -8,10 +8,13 @@ use App\Http\Requests\Admin\Client\IndexClient;
 use App\Http\Requests\Admin\Client\StoreClient;
 use App\Http\Requests\Admin\Client\UpdateClient;
 use App\Models\Client;
-use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 
 class ClientsController extends Controller
@@ -21,20 +24,11 @@ class ClientsController extends Controller
      * Display a listing of the resource.
      *
      * @param IndexClient $request
-     * @return Response|array
+     * @return array|Application|Factory|View|Response
      */
-    public function index(IndexClient $request)
+    public function index(IndexClient $request): View|Factory|Response|array|Application
     {
-        // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Client::class)->processRequestAndGet(
-        // pass the request with params
-        // pass the request with params
-            $request,
-            // set columns to query
-            ['id', 'name', 'surname', 'second_name', 'phone', 'created_at'],
-            // set columns to searchIn
-            ['id', 'name', 'surname', 'second_name', 'phone', 'created_at']
-        );
+        $data = Client::query()->get();
 
         if ($request->ajax()) {
             if ($request->has('bulk')) {
@@ -45,21 +39,16 @@ class ClientsController extends Controller
             return ['data' => $data];
         }
 
-        //return $data;
-
         return view('admin.client.index', ['data' => $data]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
-     * @throws AuthorizationException
+     * @return Application|Factory|View|Response
      */
-    public function create()
+    public function create(): View|Factory|Response|Application
     {
-        //$this->authorize('admin.client.create');
-
         return view('admin.client.create');
     }
 
@@ -67,14 +56,10 @@ class ClientsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreClient $request
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function store(StoreClient $request)
+    public function store(StoreClient $request): Response|array|Redirector|Application|RedirectResponse
     {
-        // Sanitize input
-        $sanitized = $request->validated();
-
-        // Store the Client
         $client = Client::create($request->all());
 
         if ($request->ajax()) {
@@ -88,10 +73,9 @@ class ClientsController extends Controller
      * Display the specified resource.
      *
      * @param Client $client
-     * @return void
-     * @throws AuthorizationException
+     * @return Application|Factory|View
      */
-    public function show(Client $client)
+    public function show(Client $client): Application|View|Factory
     {
         $client = Client::with([
             'tickets.category',
@@ -108,13 +92,10 @@ class ClientsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Client $client
-     * @return Response
-     * @throws AuthorizationException
+     * @return Application|Factory|View|Response
      */
-    public function edit(Client $client)
+    public function edit(Client $client): View|Factory|Response|Application
     {
-        //$this->authorize('admin.client.edit', $client);
-
 
         return view('admin.client.edit', [
             'client' => $client,
@@ -126,17 +107,10 @@ class ClientsController extends Controller
      *
      * @param UpdateClient $request
      * @param Client $client
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function update(UpdateClient $request, Client $client)
+    public function update(UpdateClient $request, Client $client): Response|array|Redirector|Application|RedirectResponse
     {
-
-
-        // Sanitize input
-//        $sanitized = $request->getSanitized();
-//
-//        return $sanitized;
-        // Update changed values Client
         $client->update($request->all());
 
         if ($request->ajax()) {
@@ -154,10 +128,10 @@ class ClientsController extends Controller
      *
      * @param DestroyClient $request
      * @param Client $client
-     * @return Response|bool
+     * @return bool|RedirectResponse|Response
      * @throws Exception
      */
-    public function destroy(DestroyClient $request, Client $client)
+    public function destroy(DestroyClient $request, Client $client): Response|bool|RedirectResponse
     {
         $client->delete();
 
@@ -172,8 +146,7 @@ class ClientsController extends Controller
      * Remove the specified resources from storage.
      *
      * @param DestroyClient $request
-     * @return Response|bool
-     * @throws Exception
+     * @return Response
      */
     public function bulkDestroy(DestroyClient $request): Response
     {
