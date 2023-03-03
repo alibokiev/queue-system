@@ -8,10 +8,13 @@ use App\Http\Requests\Admin\Service\IndexService;
 use App\Http\Requests\Admin\Service\StoreService;
 use App\Http\Requests\Admin\Service\UpdateService;
 use App\Models\Service;
-use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 
 class ServicesController extends Controller
@@ -21,21 +24,11 @@ class ServicesController extends Controller
      * Display a listing of the resource.
      *
      * @param IndexService $request
-     * @return Response|array
+     * @return array|Application|Factory|View|Response
      */
-    public function index(IndexService $request)
+    public function index(IndexService $request): View|Factory|Response|array|Application
     {
-        // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Service::class)->processRequestAndGet(
-            // pass the request with params
-            $request,
-
-            // set columns to query
-            ['id', 'name', 'boj', 'hizmat', 'kogaz'],
-
-            // set columns to searchIn
-            ['id', 'name']
-        );
+        $data = Service::query()->get();
 
         if ($request->ajax()) {
             if ($request->has('bulk')) {
@@ -52,13 +45,10 @@ class ServicesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @throws AuthorizationException
-     * @return Response
+     * @return Application|Factory|View|Response
      */
-    public function create()
+    public function create(): View|Factory|Response|Application
     {
-        //$this->authorize('admin.service.create');
-
         return view('admin.service.create');
     }
 
@@ -66,15 +56,13 @@ class ServicesController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreService $request
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function store(StoreService $request)
+    public function store(StoreService $request): Response|array|Redirector|Application|RedirectResponse
     {
-        // Sanitize input
         $sanitized = $request->validated();
 
-        // Store the Service
-        $service = Service::create($sanitized);
+        Service::query()->create($sanitized);
 
         if ($request->ajax()) {
             return ['redirect' => url('admin/services'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
@@ -84,31 +72,13 @@ class ServicesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param Service $service
-     * @throws AuthorizationException
-     * @return void
-     */
-    public function show(Service $service)
-    {
-        //$this->authorize('admin.service.show', $service);
-
-        // TODO your code goes here
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param Service $service
-     * @throws AuthorizationException
-     * @return Response
+     * @return Application|Factory|View|Response
      */
-    public function edit(Service $service)
+    public function edit(Service $service): View|Factory|Response|Application
     {
-        //$this->authorize('admin.service.edit', $service);
-
-
         return view('admin.service.edit', [
             'service' => $service,
         ]);
@@ -119,14 +89,12 @@ class ServicesController extends Controller
      *
      * @param UpdateService $request
      * @param Service $service
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Redirector
      */
-    public function update(UpdateService $request, Service $service)
+    public function update(UpdateService $request, Service $service): array|Redirector|Application|RedirectResponse
     {
-        // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Update changed values Service
         $service->update($sanitized);
 
         if ($request->ajax()) {
@@ -144,10 +112,10 @@ class ServicesController extends Controller
      *
      * @param DestroyService $request
      * @param Service $service
+     * @return bool|RedirectResponse|Response
      * @throws Exception
-     * @return Response|bool
      */
-    public function destroy(DestroyService $request, Service $service)
+    public function destroy(DestroyService $request, Service $service): Response|bool|RedirectResponse
     {
         $service->delete();
 
@@ -162,8 +130,7 @@ class ServicesController extends Controller
      * Remove the specified resources from storage.
      *
      * @param DestroyService $request
-     * @throws Exception
-     * @return Response|bool
+     * @return Response
      */
     public function bulkDestroy(DestroyService $request) : Response
     {
@@ -171,9 +138,7 @@ class ServicesController extends Controller
             collect($request->data['ids'])
                 ->chunk(1000)
                 ->each(static function ($bulkChunk) {
-                    Service::whereIn('id', $bulkChunk)->delete();
-
-                    // TODO your code goes here
+                    Service::query()->whereIn('id', $bulkChunk)->delete();
                 });
         });
 

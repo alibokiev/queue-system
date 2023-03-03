@@ -10,18 +10,16 @@ use App\Http\Requests\Admin\User\UpdateUser;
 use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
-use Brackets\AdminAuth\Models\AdminUser;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use Brackets\AdminAuth\Activation\Facades\Activation;
-use Brackets\AdminAuth\Services\ActivationService;
-use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
@@ -34,7 +32,7 @@ class UsersController extends Controller
      *
      * @var string
      */
-    protected $guard = 'admin';
+    protected mixed $guard = 'admin';
 
     /**
      * UsersController constructor.
@@ -54,20 +52,9 @@ class UsersController extends Controller
      * @param IndexUser $request
      * @return array|Application|Factory|View
      */
-    public function index(IndexUser $request)
+    public function index(IndexUser $request): View|Factory|array|Application
     {
-//        $data = AdminListing::create(User::class)->processRequestAndGet(
-//            $request,
-//            // set columns to query
-//            ['id', 'first_name', 'last_name', 'email', 'activated', 'forbidden', 'category_id', 'language'],
-//            // set columns to searchIn
-//            ['id', 'first_name', 'last_name', 'email', 'language'],
-//            function ($query) use ($request) {
-//                $query->with(['roles', 'category']);
-//            }
-//        );
-
-        User::query()->with(['roles', 'categories'])->paginate();
+        $data = User::query()->with(['roles', 'categories'])->get();
 
         if ($request->ajax()) {
             return ['data' => $data, 'activation' => Config::get('admin-auth.activation_enabled')];
@@ -80,13 +67,12 @@ class UsersController extends Controller
      * Show the form for creating a new resource.
      *
      * @return Application|Factory|View
-     * @throws AuthorizationException
      */
-    public function create()
+    public function create(): View|Factory|Application
     {
         return view('admin.user.create', [
             'activation' => Config::get('admin-auth.activation_enabled'),
-            'roles' => Role::where('guard_name', $this->guard)->get(),
+            'roles' => Role::query()->where('guard_name', $this->guard)->get(),
             'categories' => Category::all(),
         ]);
     }
@@ -95,9 +81,9 @@ class UsersController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUser $request
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function store(StoreUser $request)
+    public function store(StoreUser $request): Response|array|Redirector|Application|RedirectResponse
     {
         // Sanitize input
         $sanitized = $request->getModifiedData();
@@ -105,7 +91,7 @@ class UsersController extends Controller
         //return $sanitized;
 
         // Store the User
-        $adminUser = User::create($sanitized);
+        $adminUser = User::query()->create($sanitized);
 
         // But we do have a roles, so we need to attach the roles to the adminUser
         $adminUser->roles()->sync(collect($request->input('roles', []))->map->id->toArray());
@@ -114,7 +100,7 @@ class UsersController extends Controller
             return ['redirect' => url('admin/admin-users'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/admin-users');
+        return redirect('admin/users');
     }
 
     /**
@@ -122,17 +108,17 @@ class UsersController extends Controller
      * @param User $user
      * @return Application|Factory|View
      */
-    public function show(Request $request, User $user)
+    public function show(Request $request, User $user): View|Factory|Application
     {
-        Carbon::setWeekStartsAt(Carbon::MONDAY);
+        Carbon::setWeekStartsAt(CarbonInterface::MONDAY);
 
         $y = $request->input('y', Carbon::now()->year);
         $m = $request->input('m', Carbon::now()->month);
 
-        $dateStart = Carbon::createFromFormat('Y-m-d', "{$y}-{$m}-01");
-        $dateEnd = Carbon::createFromFormat('Y-m-d', "{$y}-{$m}-32");
+        $dateStart = Carbon::createFromFormat('Y-m-d', "$y-$m-01");
+        $dateEnd = Carbon::createFromFormat('Y-m-d', "$y-$m-32");
 
-        $ticketsByDates = Ticket::where('created_at', '>=', $dateStart)
+        $ticketsByDates = Ticket::query()->where('created_at', '>=', $dateStart)
             ->where('created_at', '<=', $dateEnd)
             ->where('user_id', $user->id)
             ->with('category')
@@ -149,7 +135,7 @@ class UsersController extends Controller
             $ticketsByDate[$item->date][] = $item;
         }
 
-        $ticketsByCategory = Ticket::where('created_at', '>=', $dateStart)
+        $ticketsByCategory = Ticket::query()->where('created_at', '>=', $dateStart)
             ->where('created_at', '<=', $dateEnd)
             ->where('user_id', $user->id)
             ->with('category')
@@ -159,7 +145,7 @@ class UsersController extends Controller
                 DB::raw('COUNT(*) as "tickets"')
             ]);
 
-        $total = Ticket::where('created_at', '>=', $dateStart)->where('user_id', $user->id)
+        $total = Ticket::query()->where('created_at', '>=', $dateStart)->where('user_id', $user->id)
             ->where('created_at', '<=', $dateEnd)->count();
 
         $totalToday = Ticket::getTodaysByUser($user);
@@ -179,19 +165,16 @@ class UsersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param User $adminUser
-     * @throws AuthorizationException
-     * @return Response
+     * @return Application|Factory|View
      */
-    public function edit(User $adminUser)
+    public function edit(User $adminUser): Application|Factory|View
     {
-        //$this->authorize('admin.user.edit', $adminUser);
-
         $adminUser->load('roles');
 
         return view('admin.admin-user.edit', [
             'adminUser' => $adminUser,
             'activation' => Config::get('admin-auth.activation_enabled'),
-            'roles' => Role::where('guard_name', $this->guard)->get(),
+            'roles' => Role::query()->where('guard_name', $this->guard)->get(),
             'categories' => Category::all(),
         ]);
     }
@@ -201,17 +184,14 @@ class UsersController extends Controller
      *
      * @param UpdateUser $request
      * @param User $adminUser
-     * @return Response|array
+     * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function update(UpdateUser $request, User $adminUser)
+    public function update(UpdateUser $request, User $adminUser): Response|array|Redirector|Application|RedirectResponse
     {
-        // Sanitize input
         $sanitized = $request->getModifiedData();
 
-        // Update changed values User
         $adminUser->update($sanitized);
 
-        // But we do have a roles, so we need to attach the roles to the adminUser
         if ($request->input('roles')) {
             $adminUser->roles()->sync(collect($request->input('roles', []))->map->id->toArray());
         }
@@ -228,10 +208,10 @@ class UsersController extends Controller
      *
      * @param DestroyUser $request
      * @param User $adminUser
+     * @return bool|RedirectResponse|Response
      * @throws Exception
-     * @return Response|bool
      */
-    public function destroy(DestroyUser $request, User $adminUser)
+    public function destroy(DestroyUser $request, User $adminUser): Response|bool|RedirectResponse
     {
         $adminUser->delete();
 

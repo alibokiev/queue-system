@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Client;
 use App\Models\Ticket;
 use Carbon\Carbon;
-use http\Client;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class ReceptionController extends Controller
 {
@@ -18,10 +19,9 @@ class ReceptionController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware(['perm:ticket']);
     }
 
-    public function index()
+    public function index(): Factory|View|Application
     {
         $categories = Category::all();
 
@@ -34,9 +34,9 @@ class ReceptionController extends Controller
      * @param Request $request
      * @return array
      */
-    public function store(Request $request)
+    public function store(Request $request): array
     {
-        $client = Client::firstOrCreate(['phone' => $request->input('phone')]);
+        Client::firstOrCreate(['phone' => $request->input('phone')]);
 
         $category = Category::findOrFail($request->input('category_id'));
 
