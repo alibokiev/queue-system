@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -15,30 +16,32 @@ class AuthController extends Controller
      * API Login, on success return JWT Auth token
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
+
         $rules = [
             'email' => 'required|email',
             'password' => 'required',
         ];
+
         $validator = Validator::make($credentials, $rules);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->messages()]);
         }
+
         try {
-            // attempt to verify the credentials and create a token for the user
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if (!$token = Auth::attempt($credentials)) {
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
             }
-        } catch (JWTException $e) {
-            // something went wrong whilst attempting to encode the token
+        } catch (Exception $e) {
+
             return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
         }
-        // all good so return the token
+
         return response()->json(['success' => true, 'data' => ['token' => $token]]);
     }
 
@@ -48,16 +51,17 @@ class AuthController extends Controller
      * They have to relogin to get a new token
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws ValidationException
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $this->validate($request, ['token' => 'required']);
+
         try {
-            JWTAuth::invalidate($request->input('token'));
+            Auth::user()->tokens()->each->delete();
             return response()->json(['success' => true, 'message' => "You have successfully logged out."]);
-        } catch (JWTException $e) {
-            // something went wrong whilst attempting to encode the token
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
         }
     }
