@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -21,12 +23,10 @@ class ProfileController extends Controller
      *
      * @var string
      */
-    protected $guard = 'admin';
+    protected string $guard = 'admin';
 
     public function __construct()
     {
-        // TODO add authorization
-        //$this->guard = config('admin-auth.defaults.guard');
     }
 
     /**
@@ -34,7 +34,7 @@ class ProfileController extends Controller
      *
      * @param Request $request
      */
-    protected function setUser($request)
+    protected function setUser(Request $request)
     {
         if (empty($request->user($this->guard))) {
             abort(404, 'Admin User not found');
@@ -49,7 +49,7 @@ class ProfileController extends Controller
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function editProfile(Request $request)
+    public function editProfile(Request $request): View|Factory|Application
     {
         $this->setUser($request);
 
@@ -62,15 +62,14 @@ class ProfileController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
+     * @return array|Application|RedirectResponse|Redirector
      * @throws ValidationException
-     * @return Response|array
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request): array|Redirector|Application|RedirectResponse
     {
         $this->setUser($request);
         $adminUser = $this->adminUser;
 
-        // Validate the request
         $this->validate($request, [
             'first_name' => ['nullable', 'string'],
             'last_name' => ['nullable', 'string'],
@@ -79,7 +78,6 @@ class ProfileController extends Controller
 
         ]);
 
-        // Sanitize input
         $sanitized = $request->only([
             'first_name',
             'last_name',
@@ -88,7 +86,6 @@ class ProfileController extends Controller
 
         ]);
 
-        // Update changed values AdminUser
         $this->adminUser->update($sanitized);
 
         if ($request->ajax()) {
@@ -102,9 +99,9 @@ class ProfileController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Request $request
-     * @return Response
+     * @return Application|Factory|View|Response
      */
-    public function editPassword(Request $request)
+    public function editPassword(Request $request): View|Factory|Response|Application
     {
         $this->setUser($request);
 
@@ -118,30 +115,25 @@ class ProfileController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
+     * @return array|Application|RedirectResponse|Response|Redirector
      * @throws ValidationException
-     * @return Response|array
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): Response|array|Redirector|Application|RedirectResponse
     {
         $this->setUser($request);
-        $adminUser = $this->adminUser;
 
-        // Validate the request
         $this->validate($request, [
             'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
 
         ]);
 
-        // Sanitize input
         $sanitized = $request->only([
             'password',
 
         ]);
 
-        //Modify input, set hashed password
         $sanitized['password'] = Hash::make($sanitized['password']);
 
-        // Update changed values AdminUser
         $this->adminUser->update($sanitized);
 
         if ($request->ajax()) {

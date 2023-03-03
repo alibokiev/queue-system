@@ -7,8 +7,10 @@ use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -16,9 +18,9 @@ class HomeController extends Controller
     /**
      * Display a listing of the resource.
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
-    public function index(Request $request)
+    public function index(Request $request): Factory|View
     {
         Carbon::setWeekStartsAt(Carbon::MONDAY);
 
