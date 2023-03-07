@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use function PHPUnit\Framework\isNull;
 
 class CabinetController extends Controller
 {
@@ -54,6 +55,10 @@ class CabinetController extends Controller
             ->with(['status', 'client'])
             ->orderBy('completed_at', 'desc')
             ->get();
+
+        if (is_null($category)) {
+            return view('404', ['message' => 'Category not found!']);
+        }
 
         $data = compact('today', 'user', 'category', 'ticket', 'tickets', 'completedTickets');
 

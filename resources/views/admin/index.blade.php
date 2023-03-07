@@ -3,7 +3,7 @@
 @section('title', 'Главная')
 
 @section('content')
-{{--    {{ dd($totalToday, $ticketsByCategory, $categories, $users, $alltotal, $ticketsByDate, $y, $m) }}--}}
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-6">
@@ -18,7 +18,6 @@
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -31,7 +30,6 @@
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
@@ -44,7 +42,6 @@
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
@@ -57,18 +54,14 @@
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-
         </div>
     </div>
-
     <div class="animated fadeIn">
-
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         Cтатистика
-
                         <form class="form-inline pull-right">
                             <select name="m" id="m" class="form-control-sm  mb-2">
                                 <option {{$m==1?'selected':''}} value="01">Янв</option>
@@ -84,7 +77,6 @@
                                 <option {{$m==11?'selected':''}} value="11">Ноя</option>
                                 <option {{$m==12?'selected':''}} value="12">Дек</option>
                             </select>
-
                             <select name="y" id="y" class="form-control-sm  mb-2 ml-2 mr-2" value="{{$y}}">
                                 <option {{$y==2019?'selected':''}} value="2019">2019</option>
                                 <option {{$y==2020?'selected':''}} value="2020">2020</option>
@@ -93,15 +85,11 @@
                                 <option {{$y==2023?'selected':''}} value="2023">2023</option>
                                 <option {{$y==2024?'selected':''}} value="2024">2024</option>
                             </select>
-
                             <button type="submit" class="btn btn-sm btn-primary mb-2">Показать</button>
                         </form>
-
-
                     </div>
                     <div class="card-body">
                         <div class="row">
-
                             <div class="col-sm-6">
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -114,7 +102,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /.col-->
                                     <div class="col-sm-6">
                                         <div class="callout callout-danger">
                                             <small class="text-muted">Категорий</small>
@@ -125,9 +112,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /.col-->
                                 </div>
-                                <!-- /.row-->
                                 <hr class="mt-0">
                                 @foreach($ticketsByDate as $date => $value)
                                     @php
@@ -147,14 +132,13 @@
                                                     {{$item->tickets}}
                                                 </div>
                                                 <div class="progress progress-xs">
-
-
                                                     <div class="progress-bar bg-{{$item->category->color}}"
                                                          role="progressbar"
                                                          style="width: {{round(100 / $total  * $item->tickets ,0)}}%"
                                                          aria-valuenow="{{round(100 / $total  * $item->tickets ,0)}}"
                                                          aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                                         aria-valuemax="100">
+                                                    </div>
                                                 </div>
                                             @endforeach
 
@@ -163,7 +147,6 @@
                                 @endforeach
 
                             </div>
-                            <!-- /.col-->
                             <div class="col-sm-6">
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -176,7 +159,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /.col-->
                                     <div class="col-sm-6">
                                         <div class="callout callout-success">
                                             <small class="text-muted">Всего</small>
@@ -187,11 +169,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /.col-->
                                 </div>
-                                <!-- /.row-->
                                 <hr class="mt-0">
-
 
                                 @foreach($ticketsByCategory as $item)
                                     <div class="progress-group">
@@ -214,20 +193,13 @@
                                         </div>
                                     </div>
                                 @endforeach
-
                             </div>
-                            <!-- /.col-->
                         </div>
-                        <!-- /.row-->
                         <br>
-
                     </div>
                 </div>
             </div>
-            <!-- /.col-->
         </div>
-
-
     </div>
 
 @stop

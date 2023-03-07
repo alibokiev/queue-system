@@ -3,6 +3,21 @@ import { createApp } from 'vue';
 
 const Vue = createApp({})
 
+Vue.mixin({
+    methods: {
+        __relativeTime(date) {
+            if (date == null) return 'Не указано';
+            // 5 минут назад, 3 дня назад
+            return moment(date).startOf('minute').fromNow();
+        },
+        __ordinaryTime(date) {
+            if (date == null) return 'Не указано';
+            // 5 минут назад, 3 дня назад
+            return moment(date).format('LT');
+        },
+    }
+});
+
 import './../../public/vendor/adminlte/dist/js/adminlte.min';
 import './../../public/vendor/jquery/jquery.min';
 import './../../public/vendor/overlayScrollbars/js/jquery.overlayScrollbars.min';
@@ -14,7 +29,7 @@ import './admin/index';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 
 import flatPickr from 'vue-flatpickr-component';
-import QuillEditor from '@vueup/vue-quill';
+// import QuillEditor from '@vueup/vue-quill';
 import Notifications from '@kyvg/vue3-notification';
 import Multiselect from 'vue-multiselect';
 import 'flatpickr/dist/flatpickr.css';
@@ -23,7 +38,7 @@ import VModal from 'vue3-simple-dialog'
 import Badge from './admin/ui/Badge.vue';
 import Monitor from "./admin/monitor/Monitor.vue";
 import PillBadge from './admin/ui/PillBadge.vue';
-import Reception from './admin/reception/Reception';
+import Reception from './admin/reception/Reception.vue';
 import TestPrint from './admin/reception/Test.vue';
 import Cabinet from './admin/cabinet/Cabinet.vue';
 import VueHtmlToPaper from 'vue-html-to-paper';
@@ -43,7 +58,7 @@ const options = {
 
 Vue.use(VModal, { dialog: true, dynamic: true, injectModalsContainer: true });
 Vue.use(VueHtmlToPaper, options);
-Vue.use(QuillEditor);
+// Vue.use(QuillEditor);
 Vue.use(Notifications);
 Vue.use(VueCookie);
 Vue.use('test-print', TestPrint);

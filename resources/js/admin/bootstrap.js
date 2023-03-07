@@ -13,18 +13,4 @@ if (token) {
 	console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-Vue.mixin({
-    methods: {
-        __relativeTime(date) {
-            if (date == null) return 'Не указано';
-            // 5 минут назад, 3 дня назад
-            return moment(date).startOf('minute').fromNow();
-        },
-        __ordinaryTime(date) {
-            if (date == null) return 'Не указано';
-            // 5 минут назад, 3 дня назад
-            return moment(date).format('LT');
-        },
-    }
-});
 

@@ -7,15 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MonitorController extends Controller
 {
     /**
      * @param Request $request
-     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param string $grad
+     * @param int $size
+     * @return array|Factory|View
      */
-    public function index(Request $request, $grad = "0", $size = 14)
+    public function index(Request $request, string $grad = "0", int $size = 14): Factory|array|View
     {
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
@@ -25,7 +29,7 @@ class MonitorController extends Controller
                 ->with(['status', 'user']);
         }, 'users'])->get();
 
-        $users = User::select('users.*')->join('categories', 'users.category_id', '=', 'categories.id')
+        $users = User::query()->select('users.*')->join('categories', 'users.category_id', '=', 'categories.id')
             ->with(['tickets' => function ($query) use ($today) {
                 $query->where('created_at', '>=', Carbon::parse($today))
                     ->whereIn('status_id', [1, 2])
@@ -44,15 +48,14 @@ class MonitorController extends Controller
 
         if ($grad != "90" && $grad != "-90") $grad = "";
 
-        return view("monitor.index{$grad}", compact('categories', 'users', 'size'));
-
+        return view("monitor.index$grad", compact('categories', 'users', 'size'));
     }
 
     /**
      * @param Request $request
-     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return array|Factory|View
      */
-    public function index90(Request $request)
+    public function index90(Request $request): Factory|array|View
     {
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
@@ -80,9 +83,9 @@ class MonitorController extends Controller
 
     /**
      * @param Request $request
-     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return array|Factory|View
      */
-    public function indexMinus90(Request $request)
+    public function indexMinus90(Request $request): Factory|array|View
     {
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
@@ -107,5 +110,4 @@ class MonitorController extends Controller
 
         return view('monitor.index-90', compact('categories', 'users'));
     }
-
 }
