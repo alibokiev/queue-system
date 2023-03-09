@@ -52,7 +52,7 @@ class HomeController extends Controller
             $ticketsByDate[$item->date][] = $item;
         }
 
-        $ticketsByCategory = Ticket::where('created_at', '>=', $dateStart)
+        $ticketsByCategory = Ticket::query()->where('created_at', '>=', $dateStart)
             ->where('created_at', '<=', $dateEnd)
             ->with('category')
             ->groupBy(['category_id'])

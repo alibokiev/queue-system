@@ -9,7 +9,7 @@
 
     <title>Очередь</title>
 
-    <link href="{{ asset('/css/admin.css') }}" rel="stylesheet">
+    @vite(['resources/sass/app.scss'])
     <style>
         html {
             font-size: {{$size}}px;
@@ -60,7 +60,7 @@
 </div>
 
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-<script src="{{ asset('/js/admin.js') }}"></script>
+@vite(['resources/js/app.js'])
 </body>
 
 </html>

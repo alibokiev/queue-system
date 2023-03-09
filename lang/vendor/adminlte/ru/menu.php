@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'main'                          => 'Главное',
     'main_navigation'               => 'ГЛАВНОЕ МЕНЮ',
     'blog'                          => 'Блог',
     'pages'                         => 'Страницы',
@@ -23,5 +23,5 @@ return [
     'services'                      => 'Сервисы',
     'categories'                    => 'Категории',
     'users'                         => 'Пользователи',
-    'settings'                      => 'Настройки'
+    'settings'                      => 'НАСТРОЙКИ'
 ];

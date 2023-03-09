@@ -1,8 +1,14 @@
-@extends('adminlte::page')
-
-@section('title', '404')
-
-@section('content')
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div class="wrapper">
     <div class="error-page">
         <h2 class="headline text-warning"> 404</h2>
         <div class="error-content">
@@ -13,6 +19,8 @@
             </p>
             <span class="text-danger fs-4">{{ $message }}</span>
         </div>
-
     </div>
-@stop
+</div>
+</body>
+</html>
+

@@ -2,6 +2,7 @@
 
 return [
 
+    'main'                        => 'Главное',
     'full_name'                   => 'Полное имя',
     'email'                       => 'Почта',
     'password'                    => 'Пароль',

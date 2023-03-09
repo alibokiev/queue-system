@@ -57,7 +57,7 @@ class CabinetController extends Controller
             ->get();
 
         if (is_null($category)) {
-            return view('404', ['message' => 'Category not found!']);
+            return view('404-admin-page', ['message' => 'Category not found!']);
         }
 
         $data = compact('today', 'user', 'category', 'ticket', 'tickets', 'completedTickets');

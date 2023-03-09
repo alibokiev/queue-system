@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'QueueSystem',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>Queue</b>System',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -308,6 +308,11 @@ return [
         ],
         ['header' => 'main_navigation'],
         [
+            'text' => 'main',
+            'url' => '/home',
+            'icon' => 'nav-icon fas fa-home'
+        ],
+        [
             'text' => 'monitor',
             'url' => '/monitor',
             'icon' => 'nav-icon fas fa-tv'
@@ -497,5 +502,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];
