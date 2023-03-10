@@ -33,95 +33,40 @@
                 transform: scale(1);
             }
         }
-
-        .rotated {
-            transform: rotate(-90deg);
+        .app {
+            background-color: {{ config('monitor.body.background-color') }};
+            {{ config('monitor.other-styles') }}
         }
     </style>
 
 </head>
-
 <body class="app">
-<div id="app">
-    <main class="main">
-        <div class="container" id="app" :class="{'loading': loading}" style="margin-top: 1.5rem">
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <table class="table ">
-                            <thead class="thead-light">
-                            <tr>
-                                <th><h2>Навбат</h2></th>
-                                <th></th>
-                                <th class="text-center"><h2>Қабул</h2></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($users as $user)
-                            <tr>
-                                <td class="no-borders" style="width: 30%">
-                                    <p class="h4">
-                                        @foreach($user->tickets as $index => $ticket)
-                                            <span>
-                                                @if($ticket->status_id === 1)
-                                                    <span>
-                                                        @if($index < 8)
-                                                        <span>
-                                                            {{ $ticket->number }}
-                                                            @if(count($user->tickets) > 1 && $index < 7)
-                                                                <span>
-                                                                    @if($index < (count($user->tickets) - 1))
-                                                                        <span>,</span>
-                                                                    @endif
-                                                                </span>
-                                                            @endif
-                                                        </span>
-                                                        @endif
-                                                        @if($index === 8)
-                                                            <span>...</span>
-                                                        @endif
-                                                    </span>
-                                                @endif
-                                            </span>
-                                        @endforeach
-                                    </p>
-                                </td>
-
-                                <td class="{{ 'no-borders table-' . $user->category->color }}">
-                                    <h5>{{ $user->category->name }}</h5>
-                                    <h4>{{ $user->full_name }} </h4>
-                                </td>
-
-                                <td class="no-borders text-center" style="width: 15%">
-                                    <h1 class="pulse">
-                                        @foreach($user->tickets as $index => $ticket)
-                                            <span>
-                                                @if($ticket->status_id === 2)
-                                                <span>
-                                                    {{ $ticket->number }}
-                                                </span>
-                                                @endif
-                                            </span>
-                                        @endforeach
-                                    </h1>
-                                </td>
-                            </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+<div class="container-fluid">
+    <div class="row">
+        @foreach(config('monitor.columns') as $column)
+            @if($column['enable'])
+                <div class="column col">
+                    <div class="content-header border-0 bg-gradient-dark">
+                        <h1 class="text-dark">{{ $column['title'] }}</h1>
                     </div>
-
+                    @livewire('board' ['tickets' => $tickets])
                 </div>
-
-            </div>
-
-        </div>
-    </main>
+            @endif
+        @endforeach
+    </div>
 </div>
 
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-@vite(['resources/js/app.js'])
 </body>
 
+<footer>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script>
+        Echo.channel('board')
+            .listen('QueueProcessed', (e) => {
+                console.log(e.order.name);
+            });
+    </script>
+    @vite(['resources/js/app.js'])
+</footer>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Monitor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory;
@@ -21,34 +22,38 @@ class MonitorController extends Controller
      */
     public function index(Request $request, string $grad = "0", int $size = 14): Factory|array|View
     {
-        $today = Carbon::now()->toDateString() . " 00:00:00";
-
-        $categories = Category::with(['tickets' => function ($query) use ($today) {
-            $query->where('created_at', '>=', Carbon::parse($today))
-                ->whereIn('status_id', [1, 2])
-                ->with(['status', 'user']);
-        }, 'users'])->get();
-
-        $users = User::query()->select('users.*')->join('categories', 'users.category_id', '=', 'categories.id')
-            ->with(['tickets' => function ($query) use ($today) {
-                $query->where('created_at', '>=', Carbon::parse($today))
-                    ->whereIn('status_id', [1, 2])
-                    ->with(['status']);
-            }, 'category'])
-//            ->where('users.id', '<>', 1)
+        $tickets = Ticket::query()
+            ->with(['category', 'client', 'client', 'status'])
             ->get();
 
-        if ($request->ajax()) {
-            return compact('categories', 'users');
-        }
+//        $today = Carbon::now()->toDateString() . " 00:00:00";
+//
+//        $categories = Category::with(['tickets' => function ($query) use ($today) {
+//            $query->where('created_at', '>=', Carbon::parse($today))
+//                ->whereIn('status_id', [1, 2])
+//                ->with(['status', 'user']);
+//        }, 'users'])->get();
+//
+//        $users = User::query()->select('users.*')->join('categories', 'users.category_id', '=', 'categories.id')
+//            ->with(['tickets' => function ($query) use ($today) {
+//                $query->where('created_at', '>=', Carbon::parse($today))
+//                    ->whereIn('status_id', [1, 2])
+//                    ->with(['status']);
+//            }, 'category'])
+////            ->where('users.id', '<>', 1)
+//            ->get();
+//
+//        if ($request->ajax()) {
+//            return compact('categories', 'users');
+//        }
+//
+//        if ($size == '') $size = 14;
+//        if ($size < 5) $size = 5;
+//        if ($size > 44) $size = 44;
+//
+//        if ($grad != "90" && $grad != "-90") $grad = "";
 
-        if ($size == '') $size = 14;
-        if ($size < 5) $size = 5;
-        if ($size > 44) $size = 44;
-
-        if ($grad != "90" && $grad != "-90") $grad = "";
-
-        return view("monitor.index$grad", compact('categories', 'users', 'size'));
+        return view("monitor.index", compact('tickets'));
     }
 
     /**
