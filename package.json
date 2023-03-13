@@ -5,10 +5,37 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "axios": "^1.1.2",
+        "@popperjs/core": "^2.11.6",
+        "@vitejs/plugin-vue": "^4.0.0",
+        "axios": "^1.3.2",
+        "bootstrap": "^5.2.3",
+        "laravel-echo": "^1.15.0",
         "laravel-vite-plugin": "^0.7.2",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
-        "vite": "^4.0.0"
+        "pusher-js": "^8.0.1",
+        "resolve-url-loader": "^5.0.0",
+        "sass": "^1.56.1",
+        "sass-loader": "^12.6.0",
+        "vite": "^4.0.0",
+        "vue": "^3.2.37",
+        "vue-loader": "^16.8.3"
+    },
+    "dependencies": {
+        "@kyvg/vue3-notification": "^2.8.0",
+        "@vueup/vue-quill": "^1.1.0",
+        "babel-plugin-transform-import-meta": "^2.2.0",
+        "babel-preset-es2015": "^6.24.1",
+        "cross-env": "^7.0.3",
+        "jquery": "^3.6.3",
+        "moment": "^2.29.4",
+        "popper.js": "^1.16.1",
+        "vee-validate": "^4.7.4",
+        "vite-plugin-environment": "^1.1.3",
+        "vue-cookie": "^1.1.4",
+        "vue-flatpickr-component": "^11.0.1",
+        "vue-html-to-paper": "^1.4.4",
+        "vue-multiselect": "^2.1.7",
+        "vue3-simple-dialog": "^1.0.5"
     }
 }

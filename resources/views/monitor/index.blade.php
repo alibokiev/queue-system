@@ -1,0 +1,3 @@
+<livewire:monitor
+    :tickets="$tickets"
+/>
