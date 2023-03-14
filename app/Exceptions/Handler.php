@@ -2,11 +2,18 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ApiResponse;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponse;
+
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -44,7 +51,29 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            if ($e instanceof AuthenticationException) {
+                return $this->responseError($e->getMessage(), $e->getCode());
+            }
+
+            if ($e instanceof ModelNotFoundException) {
+                return $this->responseError("No query results in {$e->getModel()}", $e->getCode());
+            }
+
+            if ($e instanceof ValidationException) {
+                return $this->responseValidationException($e->errors());
+            }
+
+            if ($e instanceof ValidationException) {
+                return $this->respondValidationsError($e->errors());
+            }
+
+            if ($e instanceof ApiErrorException) {
+                return $this->respondWithError($e->getMessage());
+            }
+
+            if ($e instanceof AppException) {
+                return $this->respondWithError($e->getMessage());
+            }
         });
     }
 }
