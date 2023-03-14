@@ -26,7 +26,10 @@ Route::get('/', function () {
 });
 
 Route::namespace('Api')->group(function () {
+
+    Route::post('/register', [RegisterController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+
     Route::group(['middleware' => ['auth']], function () {
         Route::get('logout', [AuthController::class, 'logout']);
     });
@@ -57,8 +60,6 @@ Route::namespace('Api')->group(function () {
         Route::post('/admin/login', [LoginController::class, 'login']);
 
         Route::any('/admin/logout', [LoginController::class, 'logout'])->name('logout');
-        Route::get('/admin/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-        Route::post('/admin/register', [RegisterController::class, 'register']);
 
         Route::get('/admin/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
         Route::post('/admin/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');

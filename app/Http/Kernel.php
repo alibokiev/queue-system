@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\{Kernel as HttpKernel,
     Middleware\ConvertEmptyStringsToNull,
     Middleware\ValidatePostSize};
 use Illuminate\Http\Middleware\{HandleCors, SetCacheHeaders};
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests};
 use Illuminate\Session\Middleware\{AuthenticateSession, StartSession};
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -59,6 +60,9 @@ class Kernel extends HttpKernel
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
+            SubstituteBindings::class,
+            EnsureFrontendRequestsAreStateful::class,
+            ThrottleRequests::class.':api',
             SubstituteBindings::class,
         ],
     ];

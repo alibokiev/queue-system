@@ -26,7 +26,7 @@ class AuthController extends Controller
         ]);
 
         try {
-            if (!$token = Auth::attempt($request->only('email', 'password'))) {
+            if (!$token = $request->user()->createToken($request->token_name)) {
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
             }
         } catch (Exception $e) {
