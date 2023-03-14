@@ -62,31 +62,27 @@ class CabinetController extends Controller
         return $this->response(Service::all());
     }
 
-    public function accept(): array
+    public function accept(): Application|ResponseFactory|Response
     {
         $user = Auth::user();
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $tickets = Ticket::with(['status', 'user', 'client'])
+        $ticket = Ticket::with(['status', 'user', 'client'])
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1])
-            ->where('user_id', $user->id)
-            ->get();
+            ->where('service_id', $user->getServicesId())
+            ->first();
 
-        if (count($tickets) > 0) {
-            $currentTicket = $tickets->first();
-            $currentTicket->status_id = 2;
-            $currentTicket->user_id = $user->id;
-            $currentTicket->invited_at = Carbon::now();
-            $currentTicket->save();
-            $success = true;
+        if (!is_null($ticket)) {
+            $ticket->status_id = 2;
+            $ticket->user_id = $user->id;
+            $ticket->invited_at = Carbon::now();
+            $ticket->save();
 
-            return compact('currentTicket', 'success');
+            return $this->response($ticket);
         }
 
-        $success = false;
-
-        return compact('success');
+        return $this->responseUnsuccess('');
     }
 
     public function done(Request $request)
@@ -117,7 +113,6 @@ class CabinetController extends Controller
         $client->address = $request->data['address'];
         $client->date_of_birth = $request->data['date_of_birth'];
         $client->save();
-
     }
 
 }

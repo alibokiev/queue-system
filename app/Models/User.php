@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Routing\UrlGenerator;
@@ -50,44 +52,21 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
-    protected $appends = ['full_name', 'resource_url'];
-
-    public function adminlte_image(): string
-    {
-        return 'https://picsum.photos/300/300';
-    }
-
-    public function adminlte_desc(): string
-    {
-        return $this->bio ?? '';
-    }
-
-    public function adminlte_profile_url(): string
-    {
-        return '#';
-    }
+    protected $appends = [
+        'full_name'
+    ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function tickets()
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
-    }
-
-    /**
-     * Resource url to generate edit
-     *
-     * @return UrlGenerator|string
-     */
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/admin-users/' . $this->getKey());
     }
 
     /**
@@ -100,23 +79,8 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
+    public function getServicesId()
     {
-        return $this->getKey();
-    }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
     }
 }

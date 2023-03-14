@@ -21,7 +21,7 @@ trait ApiResponse
      * @param array|Collection|Model $data
      * @return Application|ResponseFactory|Response
      */
-    public function response(array|Collection|Model $data): Response|Application|ResponseFactory
+    public function response(array|Collection|Model $data = []): Response|Application|ResponseFactory
     {
         return response([
             'meta' => [
@@ -31,6 +31,13 @@ trait ApiResponse
             ],
             'response' => $data ?? []
         ]);
+    }
+
+    public function responseUnsuccess(): Response|Application|ResponseFactory
+    {
+        $this->success = false;
+
+        return response();
     }
 
     /**
