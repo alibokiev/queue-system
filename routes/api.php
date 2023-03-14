@@ -52,36 +52,32 @@ Route::namespace('Api')->group(function () {
     Route::get('/monitor/{grad}', [MonitorController::class, 'index']);
     Route::get('/monitor/{grad}/{size}', [MonitorController::class, 'index']);
 
-    Route::middleware(['web'])->group(static function () {
-        Route::namespace('Admin\AdminAuth')->group(static function () {
-            Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
-            Route::post('/admin/login', [LoginController::class, 'login']);
+    Route::namespace('Admin\AdminAuth')->group(static function () {
+        Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/admin/login', [LoginController::class, 'login']);
 
-            Route::any('/admin/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::any('/admin/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::get('/admin/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/admin/register', [RegisterController::class, 'register']);
 
-            Route::get('/admin/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-            Route::post('/admin/register', [RegisterController::class, 'register']);
+        Route::get('/admin/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/admin/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/admin/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/admin/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-            Route::get('/admin/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-            Route::post('/admin/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-            Route::get('/admin/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-            Route::post('/admin/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+        Route::get('/admin/password/confirm', [ConfirmPasswordController::class, 'showConfirmForm'])->name('password.confirm');
+        Route::post('/admin/password/confirm', [ConfirmPasswordController::class, 'confirm']);
 
-            Route::get('/admin/password/confirm', [ConfirmPasswordController::class, 'showConfirmForm'])->name('password.confirm');
-            Route::post('/admin/password/confirm', [ConfirmPasswordController::class, 'confirm']);
-
-            Route::get('/admin/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
-            Route::get('/admin/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
-            Route::post('/admin/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
-        });
+        Route::get('/admin/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+        Route::get('/admin/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+        Route::post('/admin/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
     });
 
-
-    /* Auto-generated admin routes */
     Route::middleware(['web', 'auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
         Route::get('/admin/', [HomeController::class, 'index'])->name('admin.index');
 
     });
+
     Route::middleware(['auth:' . config('auth.defaults.guard'), 'admin'])->group(static function () {
         Route::get('/admin/users', [UsersController::class, 'index']);
         Route::get('/admin/users/{user}', [UsersController::class, 'show'])->where('user', '[0-9]+');

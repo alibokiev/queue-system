@@ -45,7 +45,7 @@ return [
             'provider' => 'users',
         ],
         'api' => [
-            'driver' => 'jwt',
+            'driver' => 'sunctum',
             'provider' => 'users',
             'hash' => false,
         ],

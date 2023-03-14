@@ -20,21 +20,13 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
-
-        $rules = [
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-        ];
-
-        $validator = Validator::make($credentials, $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->messages()]);
-        }
+        ]);
 
         try {
-            if (!$token = Auth::attempt($credentials)) {
+            if (!$token = Auth::attempt($request->only('email', 'password'))) {
                 return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
             }
         } catch (Exception $e) {
