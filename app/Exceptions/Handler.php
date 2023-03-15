@@ -4,10 +4,13 @@ namespace App\Exceptions;
 
 use App\Traits\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -17,7 +20,7 @@ class Handler extends ExceptionHandler
     /**
      * A list of exception types with their corresponding custom log levels.
      *
-     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+     * @var array<class-string<Throwable>, \Psr\Log\LogLevel::*>
      */
     protected $levels = [
         //
@@ -26,7 +29,7 @@ class Handler extends ExceptionHandler
     /**
      * A list of the exception types that are not reported.
      *
-     * @var array<int, class-string<\Throwable>>
+     * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
         //
@@ -48,32 +51,27 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            if ($e instanceof AuthenticationException) {
-                return $this->responseError($e->getMessage(), $e->getCode());
-            }
-
-            if ($e instanceof ModelNotFoundException) {
-                return $this->responseError("No query results in {$e->getModel()}", $e->getCode());
-            }
-
-            if ($e instanceof ValidationException) {
-                return $this->responseValidationException($e->errors());
-            }
-
-            if ($e instanceof ValidationException) {
-                return $this->respondValidationsError($e->errors());
-            }
-
-            if ($e instanceof ApiErrorException) {
-                return $this->respondWithError($e->getMessage());
-            }
-
-            if ($e instanceof AppException) {
-                return $this->respondWithError($e->getMessage());
-            }
+            //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof AuthenticationException) {
+            return $this->responseError($e->getMessage(), $e->getCode());
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return $this->responseError("No query results in {$e->getModel()}", $e->getCode());
+        }
+
+        if ($e instanceof ValidationException) {
+            return $this->responseValidationException($e->errors());
+        }
+
+        return parent::render($request, $e);
     }
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('block')->default(false);
+            $table->boolean('is_block')->default(false);
             $table->string('service_center_id');
 
             $table->timestamps();

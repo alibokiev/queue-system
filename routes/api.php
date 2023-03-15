@@ -34,11 +34,9 @@ Route::namespace('Api')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
     });
 
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
         //user
-        Route::get('/user', function (Request $request) {
-            return $request->user();
-        });
+        Route::get('/me', [AuthController::class, 'me']);
 
         Route::get('/cabinet', [CabinetController::class, 'index']);
         Route::post('/cabinet/accept', [CabinetController::class, 'accept']);

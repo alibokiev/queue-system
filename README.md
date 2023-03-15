@@ -49,18 +49,18 @@ If something doesn't work contact the developer. Next:
 ```bash
 cp .env.dev .env
 ```
-If you run app in prod, set up the .env yourself. Next:
-```bash
-php artisan key:generate
-```
-```bash
-php artisan migrate
-```
-```bash
-php artisan db:seed
-```
 ```bash
 ./vendor/bin/sail up -d
+```
+If you run app in prod, set up the .env yourself. Next:
+```bash
+sail artisan key:generate
+```
+```bash
+sail artisan migrate
+```
+```bash
+sail artisan db:seed
 ```
 
 The application will be available at address 127.0.0.1:80 (localhost). 

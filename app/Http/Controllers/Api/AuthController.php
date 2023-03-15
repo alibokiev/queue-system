@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController extends Controller
 {
@@ -16,9 +20,9 @@ class AuthController extends Controller
      * API Login, on success return JWT Auth token
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|Response
      */
-    public function login(Request $request): JsonResponse
+    public function login(Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|Response
     {
         $request->validate([
             'email' => 'required|email',
@@ -26,15 +30,20 @@ class AuthController extends Controller
         ]);
 
         try {
-            if (!$token = $request->user()->createToken($request->token_name)) {
-                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials.'], 401);
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return $this->responseError('We cant find an account with this credentials.', ResponseAlias::HTTP_UNAUTHORIZED);
             }
         } catch (Exception $e) {
+            Log::critical($e->getMessage(), $e->getTrace());
 
-            return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
+            return $this->responseError('Failed to login, please try again.', ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json(['success' => true, 'data' => ['token' => $token]]);
+        $user = User::query()->where('email', $request['email'])->firstOrFail();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return $this->response(['token' => $token]);
     }
 
     /**
@@ -58,4 +67,8 @@ class AuthController extends Controller
         }
     }
 
+    public function me(Request $request)
+    {
+        return $request->user();
+    }
 }

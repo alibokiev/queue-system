@@ -62,7 +62,7 @@ trait ApiResponse
      * @return Application|ResponseFactory|Response
      */
     public function responseValidationException(
-        array $errors, string $message, int $code = ResponseAlias::HTTP_NOT_FOUND
+        array $errors, string $message = "Validation error.", int $code = ResponseAlias::HTTP_NOT_FOUND
     ): Response|Application|ResponseFactory {
         $this->success = false;
         $this->code = $code;
