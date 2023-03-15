@@ -22,11 +22,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_block')->default(false);
-            $table->string('service_center_id');
-
+            $table->unsignedBigInteger('service_center_id');
             $table->timestamps();
             $table->softDeletes();
             $table->rememberToken();
+
+            $table->foreign('service_center_id')->references('id')->on('service_centers');
         });
     }
 
