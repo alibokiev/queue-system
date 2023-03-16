@@ -3,19 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServiceCenter extends Model
 {
-    public $timestamps = false;
-
     protected $fillable = [
         'name',
         'address'
     ];
 
-    public function user(): BelongsTo
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    public function user(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }

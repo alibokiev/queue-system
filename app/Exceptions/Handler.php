@@ -58,6 +58,12 @@ class Handler extends ExceptionHandler
         });
     }
 
+    /**
+     * @param $request
+     * @param Throwable $e
+     * @return Application|ResponseFactory|JsonResponse|\Illuminate\Http\Response|Response
+     * @throws Throwable
+     */
     public function render($request, Throwable $e)
     {
         if ($e instanceof AuthenticationException) {
