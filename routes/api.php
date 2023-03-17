@@ -29,14 +29,13 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware('guest')->group(function () {
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
+        Route::post('/register', [RegisterController::class, 'register']);
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
     });
 
-    Route::post('/register', [RegisterController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
-
-    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm']);
-    Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
+    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
     Route::get('/password/confirm', [ConfirmPasswordController::class, 'showConfirmForm']);
     Route::post('/password/confirm', [ConfirmPasswordController::class, 'confirm']);
