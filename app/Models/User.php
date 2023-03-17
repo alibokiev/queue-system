@@ -9,6 +9,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -73,6 +74,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(Ticket::class);
     }
 
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class);
+    }
+
     /**
      * Full name for admin user
      *
@@ -83,9 +89,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function getServicesId()
+    public function getServicesId(): array
     {
-
+        return $this->services()->get()->pluck('id')->toArray();
     }
 
     public function sendPasswordResetNotification($token)

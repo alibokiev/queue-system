@@ -52,9 +52,7 @@ class CabinetController extends Controller
             return view('404-admin-page', ['message' => 'Category not found!']);
         }
 
-        $data = compact('today', 'user', 'category', 'ticket', 'tickets', 'completedTickets');
-
-        return $this->response($data);
+        return $this->response(compact('today', 'user', 'category', 'ticket', 'tickets', 'completedTickets'));
     }
 
     public function services(): Response|Application|ResponseFactory
@@ -71,6 +69,7 @@ class CabinetController extends Controller
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1])
             ->where('service_id', $user->getServicesId())
+            ->orderByDesc('priority')
             ->first();
 
         if (!is_null($ticket)) {

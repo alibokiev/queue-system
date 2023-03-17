@@ -17,6 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('number');
             $table->text('comment')->nullable();
+            $table->integer('priority')->default(0);
             $table->bigInteger('service_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->bigInteger('user_id')->nullable()->unsigned();
