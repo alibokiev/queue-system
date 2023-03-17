@@ -32,20 +32,14 @@ Route::namespace('Api')->group(function () {
         Route::post('/register', [RegisterController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
         Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-
+        Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
+        Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
     });
 
-    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
-
-    Route::get('/password/confirm', [ConfirmPasswordController::class, 'showConfirmForm']);
-    Route::post('/password/confirm', [ConfirmPasswordController::class, 'confirm']);
-
-    Route::get('/email/verify', [VerificationController::class, 'show']);
-    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify']);
-    Route::post('/email/resend', [VerificationController::class, 'resend']);
-
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('logout', [AuthController::class, 'logout']);
+        Route::post('/email/resend', [VerificationController::class, 'resend']);
+
+        Route::get('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
 
         Route::get('/home', [HomeController::class, 'index']);
