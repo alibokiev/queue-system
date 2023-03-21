@@ -36,12 +36,11 @@ Route::namespace('Api')->group(function () {
         Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/email/resend', [VerificationController::class, 'resend']);
+    Route::post('/email/resend', [VerificationController::class, 'resend'])->middleware('auth:sanctum');
+    Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-        Route::get('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [AuthController::class, 'me']);
-
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
 
         Route::get('/cabinet', [CabinetController::class, 'index']);

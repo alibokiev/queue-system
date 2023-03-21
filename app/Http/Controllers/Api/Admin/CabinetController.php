@@ -9,11 +9,9 @@ use App\Models\Client;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class CabinetController extends Controller
 {
@@ -27,8 +25,6 @@ class CabinetController extends Controller
         $user = Auth::user();
 
         $today = Carbon::now()->toDateString() . " 00:00:00";
-
-        $category = $user->category()->first();
 
         $tickets = Ticket::with(['status', 'user', 'client'])
             ->where('created_at', '>=', Carbon::parse($today))
@@ -48,11 +44,7 @@ class CabinetController extends Controller
             ->orderBy('completed_at', 'desc')
             ->get();
 
-        if (is_null($category)) {
-            return view('404-admin-page', ['message' => 'Category not found!']);
-        }
-
-        return $this->response(compact('today', 'user', 'category', 'ticket', 'tickets', 'completedTickets'));
+        return $this->response(compact('today', 'user', 'ticket', 'tickets', 'completedTickets'));
     }
 
     public function services(): Response|Application|ResponseFactory
@@ -81,7 +73,7 @@ class CabinetController extends Controller
             return $this->response($ticket);
         }
 
-        return $this->responseUnsuccess('');
+        return $this->responseUnsuccess();
     }
 
     public function done(Request $request)
@@ -91,6 +83,7 @@ class CabinetController extends Controller
         $ticket->completed_at = Carbon::now();
         $ticket->save();
 
+        $this->response();
     }
 
     public function saveTicket(Request $request)
@@ -112,6 +105,8 @@ class CabinetController extends Controller
         $client->address = $request->data['address'];
         $client->date_of_birth = $request->data['date_of_birth'];
         $client->save();
+
+        return $this->response();
     }
 
 }

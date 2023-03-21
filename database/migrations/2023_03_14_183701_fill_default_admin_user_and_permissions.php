@@ -118,6 +118,7 @@ return new class extends Migration
                 'password' => Hash::make($this->password),
                 'remember_token' => null,
                 'service_center_id' => 1,
+                'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'roles' => [
