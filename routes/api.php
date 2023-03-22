@@ -17,9 +17,6 @@ use App\Http\Controllers\Api\Admin\{CabinetController,
     ServicesController,
     UsersController};
 use App\Http\Controllers\Api\{AuthController, MonitorController, ServiceCenterController};
-use Illuminate\Support\Facades\Auth;
-
-Auth::routes();
 
 Route::get('/', function () {
     return 'Queue system service';
