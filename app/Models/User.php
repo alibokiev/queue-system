@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-use App\Notifications\ResetPasswordNotification;
-use App\Notifications\VerifyEmailNotifications;
-use Illuminate\Auth\MustVerifyEmail;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Notifications\{ResetPasswordNotification, VerifyEmailNotifications};
+use Illuminate\Auth\{MustVerifyEmail, Passwords\CanResetPassword};
+use Illuminate\Contracts\Auth\{CanResetPassword as CanResetPasswordContract,
+    MustVerifyEmail as MustVerifyEmailContract};
+use Illuminate\Database\Eloquent\{Factories\HasFactory,
+    Relations\BelongsTo,
+    Relations\BelongsToMany,
+    Relations\HasMany,
+    SoftDeletes};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmailContract
+class User extends Authenticatable implements MustVerifyEmailContract, CanResetPasswordContract
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail;
 

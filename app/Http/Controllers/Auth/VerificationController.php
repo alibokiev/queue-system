@@ -5,34 +5,20 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Foundation\Auth\VerifiesEmails;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class VerificationController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Email Verification Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling email verification for any
-    | user that recently registered with the application. Emails may also
-    | be re-sent if the user didn't receive the original email message.
-    |
-    */
-
-    use VerifiesEmails;
-
     /**
      * Where to redirect users after verification.
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected string $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -58,5 +44,22 @@ class VerificationController extends Controller
         }
 
         return redirect(config('app.front_url') . '/email/verified')->with('verified', true);
+    }
+
+    /**
+     * Resend the email verification notification.
+     *
+     * @param Request $request
+     * @return Application|ResponseFactory|Response
+     */
+    public function resend(Request $request): Application|ResponseFactory|Response
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return $this->response([], "User has verify email.");
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return $this->response();
     }
 }

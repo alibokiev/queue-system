@@ -7,15 +7,13 @@ use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 
 class RegisterController extends Controller
 {
@@ -50,8 +48,6 @@ class RegisterController extends Controller
 
         $this->guard()->login($user);
 
-        auth()->user();
-
         return $this->response([
             'access_token' => $token,
             'token_type' => 'Bearer',
@@ -78,5 +74,15 @@ class RegisterController extends Controller
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * Get the guard to be used during registration.
+     *
+     * @return StatefulGuard
+     */
+    protected function guard()
+    {
+        return Auth::guard();
     }
 }

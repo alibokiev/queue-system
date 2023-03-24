@@ -21,13 +21,13 @@ trait ApiResponse
      * @param array|Collection|Model $data
      * @return Application|ResponseFactory|Response
      */
-    public function response(array|Collection|Model $data = []): Response|Application|ResponseFactory
+    public function response(array|Collection|Model $data = [], string $message = ''): Response|Application|ResponseFactory
     {
         return response([
             'meta' => [
                 'success' => $this->success,
                 'code' => $this->code,
-                'message' => $this->message
+                'message' => $message
             ],
             'response' => $data ?? []
         ]);

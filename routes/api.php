@@ -26,8 +26,8 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware('guest')->group(function () {
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
-        Route::post('/register', [RegisterController::class, 'register']);
-        Route::post('login', [AuthController::class, 'login']);
+        Route::post('/register', [RegisterController::class, 'register'])->name('register');
+        Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
         Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
         Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
