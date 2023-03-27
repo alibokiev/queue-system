@@ -21,9 +21,9 @@ class Ticket extends Model
         'created_at'
     ];
 
-    public function category(): BelongsTo
+    public function service(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Service::class);
     }
 
     public function client(): BelongsTo
@@ -31,7 +31,7 @@ class Ticket extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function CC(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

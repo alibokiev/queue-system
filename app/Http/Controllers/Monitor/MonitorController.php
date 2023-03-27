@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Monitor;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -64,7 +64,7 @@ class MonitorController extends Controller
     {
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $categories = Category::with(['tickets' => function ($query) use ($today) {
+        $categories = ServiceCategory::with(['tickets' => function ($query) use ($today) {
             $query->where('created_at', '>=', Carbon::parse($today))
                 ->whereIn('status_id', [1, 2])
                 ->with(['status', 'user']);
@@ -94,7 +94,7 @@ class MonitorController extends Controller
     {
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $categories = Category::with(['tickets' => function ($query) use ($today) {
+        $categories = ServiceCategory::with(['tickets' => function ($query) use ($today) {
             $query->where('created_at', '>=', Carbon::parse($today))
                 ->whereIn('status_id', [1, 2])
                 ->with(['status', 'user']);

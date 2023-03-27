@@ -21,7 +21,11 @@ return new class extends Migration
             $table->double('boj')->nullable()->default(0.);
             $table->double('hizmat')->nullable()->default(0.);
             $table->double('kogaz')->nullable()->default(0.);
+            $table->unsignedBigInteger('category_id');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('category_id')->on('service_categories')->references('id');
         });
     }
 

@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\Category\DestroyCategory;
 use App\Http\Requests\Admin\Category\IndexCategory;
 use App\Http\Requests\Admin\Category\StoreCategory;
 use App\Http\Requests\Admin\Category\UpdateCategory;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Ticket;
 use App\Models\User;
 use Exception;
@@ -34,7 +34,7 @@ class CategoriesController extends Controller
      */
     public function index(IndexCategory $request): View|Factory|Response|array|Application
     {
-        $data = Category::query()->get();
+        $data = ServiceCategory::query()->get();
 
         if ($request->ajax()) {
             if ($request->has('bulk')) {
@@ -72,7 +72,7 @@ class CategoriesController extends Controller
         $sanitized = $request->validated();
 
         // Store the Category
-        $category = Category::create($sanitized);
+        $category = ServiceCategory::create($sanitized);
 
         if ($request->ajax()) {
             return ['redirect' => url('admin/categories'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
@@ -84,10 +84,10 @@ class CategoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Category $category
+     * @param ServiceCategory $category
      * @return Application|Factory|View|Response
      */
-    public function edit(Category $category): View|Factory|Response|Application
+    public function edit(ServiceCategory $category): View|Factory|Response|Application
     {
         //$this->authorize('admin.category.edit', $category);
 
@@ -100,10 +100,10 @@ class CategoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateCategory $request
-     * @param Category $category
+     * @param ServiceCategory $category
      * @return array|Application|RedirectResponse|Response|Redirector
      */
-    public function update(UpdateCategory $request, Category $category): Response|array|Redirector|Application|RedirectResponse
+    public function update(UpdateCategory $request, ServiceCategory $category): Response|array|Redirector|Application|RedirectResponse
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
@@ -125,11 +125,11 @@ class CategoriesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param DestroyCategory $request
-     * @param Category $category
+     * @param ServiceCategory $category
      * @return bool|RedirectResponse|Response
      * @throws Exception
      */
-    public function destroy(DestroyCategory $request, Category $category): Response|bool|RedirectResponse
+    public function destroy(DestroyCategory $request, ServiceCategory $category): Response|bool|RedirectResponse
     {
         $users = User::where('category_id', $category->id)->get();
 
@@ -161,7 +161,7 @@ class CategoriesController extends Controller
             collect($request->data['ids'])
                 ->chunk(1000)
                 ->each(static function ($bulkChunk) {
-                    Category::whereIn('id', $bulkChunk)->delete();
+                    ServiceCategory::whereIn('id', $bulkChunk)->delete();
 
                     // TODO your code goes here
                 });

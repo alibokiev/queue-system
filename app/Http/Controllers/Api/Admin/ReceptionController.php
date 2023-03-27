@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Service;
+use App\Models\ServiceCategory;
 use App\Models\Client;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ReceptionController extends Controller
 {
@@ -21,34 +24,37 @@ class ReceptionController extends Controller
     {
     }
 
-    public function index(): Factory|View|Application
+    /**
+     * @return Response|Application|ResponseFactory
+     */
+    public function index(): Response|Application|ResponseFactory
     {
-        $categories = Category::all();
+        $serviceCategories = ServiceCategory::with('services')->get();
 
         $text = '';
 
-        return view('admin.reception.index', compact('categories', 'text'));
+        return $this->response(compact('serviceCategories', 'text'));
     }
 
     /**
      * @param Request $request
-     * @return array
+     * @return Application|Response|ResponseFactory
      */
-    public function store(Request $request): array
+    public function store(Request $request): Application|ResponseFactory|Response
     {
-        Client::firstOrCreate(['phone' => $request->input('phone')]);
+        Client::query()->firstOrCreate(['phone' => $request->input('phone')]);
 
-        $category = Category::findOrFail($request->input('category_id'));
+        $service = Service::findOrFail($request->input('serviceId'));
 
         $ticket = Ticket::create([
-            'category_id' => $category->id,
+            'service_id' => $service->id,
             'created_at' => Carbon::now(),
             'status_id' => 1,
             'comment' => '',
-            'number' => Ticket::getNumber($category),
+            'number' => Ticket::getNumber($service),
         ]);
 
-        return compact('ticket');
+        return $this->response($ticket);
     }
 
     public function skipAll()

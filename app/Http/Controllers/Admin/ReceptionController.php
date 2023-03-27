@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Client;
 use App\Models\Ticket;
 use Carbon\Carbon;
@@ -23,7 +23,7 @@ class ReceptionController extends Controller
 
     public function index(): Factory|View|Application
     {
-        $categories = Category::all();
+        $categories = ServiceCategory::all();
 
         $text = '';
 
@@ -38,7 +38,7 @@ class ReceptionController extends Controller
     {
         Client::firstOrCreate(['phone' => $request->input('phone')]);
 
-        $category = Category::findOrFail($request->input('category_id'));
+        $category = ServiceCategory::findOrFail($request->input('category_id'));
 
         $ticket = Ticket::create([
             'category_id' => $category->id,

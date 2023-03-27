@@ -4,8 +4,7 @@ namespace App\Models;
 
 use App\Notifications\{ResetPasswordNotification, VerifyEmailNotifications};
 use Illuminate\Auth\{MustVerifyEmail, Passwords\CanResetPassword};
-use Illuminate\Contracts\Auth\{CanResetPassword as CanResetPasswordContract,
-    MustVerifyEmail as MustVerifyEmailContract};
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\{Factories\HasFactory,
     Relations\BelongsTo,
     Relations\BelongsToMany,
@@ -16,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmailContract, CanResetPasswordContract
+class User extends Authenticatable implements MustVerifyEmailContract
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail;
 
@@ -65,7 +64,7 @@ class User extends Authenticatable implements MustVerifyEmailContract, CanResetP
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(ServiceCategory::class);
     }
 
     public function tickets(): HasMany

@@ -19,6 +19,7 @@ trait ApiResponse
 
     /**
      * @param array|Collection|Model $data
+     * @param string $message
      * @return Application|ResponseFactory|Response
      */
     public function response(array|Collection|Model $data = [], string $message = ''): Response|Application|ResponseFactory
@@ -27,7 +28,7 @@ trait ApiResponse
             'meta' => [
                 'success' => $this->success,
                 'code' => $this->code,
-                'message' => $message
+                'message' => ($message != '') ? $message : $this->message
             ],
             'response' => $data ?? []
         ]);
@@ -52,7 +53,7 @@ trait ApiResponse
         $this->code = $code;
         $this->message = $message;
 
-        return $this->response([]);
+        return $this->response();
     }
 
     /**

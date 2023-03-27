@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\Client;

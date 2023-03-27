@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Client;
 use App\Models\Service;
 use App\Models\Ticket;
@@ -22,7 +22,7 @@ class ReceptionController extends Controller
 
     public function index()
     {
-        $categories = Category::with(['users' => function ($query) {
+        $categories = ServiceCategory::with(['users' => function ($query) {
             $query->where('id', '<>', 1);
         }])->get();
 

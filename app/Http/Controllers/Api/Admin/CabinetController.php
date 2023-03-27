@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\Client;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -20,7 +21,7 @@ class CabinetController extends Controller
         $this->middleware(['perm:works']);
     }
 
-    public function index(Request $request): Application|ResponseFactory|Response
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -29,7 +30,8 @@ class CabinetController extends Controller
         $tickets = Ticket::with(['status', 'user', 'client'])
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1, 2])
-            ->where('user_id', $user->id)
+            ->where('service_id', $user->getServicesId())
+            ->orderByDesc('priority')
             ->get();
 
         $ticket = $user->tickets()->where('created_at', '>=', Carbon::parse($today))

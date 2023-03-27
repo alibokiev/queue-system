@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -21,7 +22,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('is_block')->default(false);
+            $table->boolean('is_block')->default(true);
+            $table->string('public_id')->default(Str::random());
             $table->unsignedBigInteger('service_center_id');
             $table->timestamps();
             $table->softDeletes();

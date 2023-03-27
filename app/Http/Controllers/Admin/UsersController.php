@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\User\DestroyUser;
 use App\Http\Requests\Admin\User\IndexUser;
 use App\Http\Requests\Admin\User\StoreUser;
 use App\Http\Requests\Admin\User\UpdateUser;
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -73,7 +73,7 @@ class UsersController extends Controller
         return view('admin.user.create', [
             'activation' => Config::get('admin-auth.activation_enabled'),
             'roles' => Role::query()->where('guard_name', $this->guard)->get(),
-            'categories' => Category::all(),
+            'categories' => ServiceCategory::all(),
         ]);
     }
 
@@ -175,7 +175,7 @@ class UsersController extends Controller
             'adminUser' => $adminUser,
             'activation' => Config::get('admin-auth.activation_enabled'),
             'roles' => Role::query()->where('guard_name', $this->guard)->get(),
-            'categories' => Category::all(),
+            'categories' => ServiceCategory::all(),
         ]);
     }
 

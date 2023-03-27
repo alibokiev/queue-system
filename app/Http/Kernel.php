@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\{Kernel as HttpKernel,
     Middleware\ConvertEmptyStringsToNull,
     Middleware\ValidatePostSize};
 use Illuminate\Http\Middleware\{HandleCors, SetCacheHeaders};
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests};
 use Illuminate\Session\Middleware\{AuthenticateSession, StartSession};
@@ -58,10 +60,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
+            EnsureFrontendRequestsAreStateful::class
         ],
     ];
 
@@ -86,5 +88,7 @@ class Kernel extends HttpKernel
 
         'admin' => CanAdmin::class,
         'perm' => PermissionMiddleware::class,
+        'abilities' => CheckAbilities::class,
+        'ability' => CheckForAnyAbility::class
     ];
 }

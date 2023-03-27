@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\ServiceCategory;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -65,7 +65,7 @@ class HomeController extends Controller
             ->where('created_at', '<=', $dateEnd)->count();
 
         $totalToday = Ticket::getTodays();
-        $categories = Category::count();
+        $categories = ServiceCategory::count();
         $users = User::whereNotNull('category_id')->count();
 
         return view(

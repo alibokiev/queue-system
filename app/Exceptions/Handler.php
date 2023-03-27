@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -61,13 +63,13 @@ class Handler extends ExceptionHandler
     /**
      * @param $request
      * @param Throwable $e
-     * @return Application|ResponseFactory|JsonResponse|\Illuminate\Http\Response|Response
+     * @return Application|ResponseFactory|JsonResponse|Response
      * @throws Throwable
      */
     public function render($request, Throwable $e)
     {
         if ($e instanceof AuthenticationException) {
-            return $this->responseError($e->getMessage(), $e->getCode());
+            return $this->responseError($e->getMessage(), ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         if ($e instanceof ModelNotFoundException) {
@@ -76,6 +78,10 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof ValidationException) {
             return $this->responseValidationException($e->errors());
+        }
+
+        if ($e instanceof HttpException) {
+            return $this->responseError($e->getMessage(), $e->getStatusCode());
         }
 
         return parent::render($request, $e);
