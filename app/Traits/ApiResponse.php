@@ -3,8 +3,10 @@
 namespace App\Traits;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -70,5 +72,35 @@ trait ApiResponse
         $this->message = $message;
 
         return $this->response($errors);
+    }
+
+    /**
+     * @param LengthAwarePaginator $awarePaginator
+     * @param JsonResource|null $resourceForMap
+     * @return Application|Response|ResponseFactory
+     */
+    public function responsePaginate(LengthAwarePaginator $awarePaginator, JsonResource $resourceForMap = null): Application|ResponseFactory|Response
+    {
+        if (!is_null($resourceForMap)) {
+            $items = $resourceForMap->collection($awarePaginator->items());
+        } else {
+            $items = $awarePaginator->items();
+        }
+
+        return $this->response([
+            'pagination' => $this->getPagination($awarePaginator),
+            'items'      => $items,
+        ]);
+    }
+
+    public function getPagination(LengthAwarePaginator $item)
+    {
+        return [
+            'total'        => $item->total(),
+            'current_page' => $item->currentPage(),
+            'last_page'    => $item->lastPage(),
+            'from'         => $item->firstItem(),
+            'to'           => $item->lastItem(),
+        ];
     }
 }

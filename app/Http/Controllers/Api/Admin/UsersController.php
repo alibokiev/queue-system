@@ -12,7 +12,9 @@ use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -47,68 +49,51 @@ class UsersController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
      * @param IndexUser $request
-     * @return array|Application|Factory|View
+     * @return Response|Application|ResponseFactory
      */
-    public function index(IndexUser $request): View|Factory|array|Application
+    public function index(IndexUser $request): Response|Application|ResponseFactory
     {
-        $data = User::query()->with(['roles', 'categories'])->get();
+        $limit = $request->input('limit', 5);
 
-        if ($request->ajax()) {
-            return ['data' => $data, 'activation' => Config::get('admin-auth.activation_enabled')];
+        $data = User::query()
+            ->with(['roles', 'services'])
+            ->orderBy($request->input('order_by', 'id'), $request->input('order_direction', 'asc'));
+
+        if ($request->input('search')) {
+            $data->where('first_name', 'like', "%{$request->input('search')}%")
+                ->orWhere('last_name', 'like', "%{$request->input('search')}%")
+                ->orWhere('public_id', 'like', "%{$request->input('search')}%");
         }
 
-        return view('admin.user.index', ['data' => $data, 'activation' => Config::get('admin-auth.activation_enabled')]);
+        $data = $data->paginate($limit);
+
+        return $this->responsePaginate($data);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
-     */
-    public function create(): View|Factory|Application
-    {
-        return view('admin.user.create', [
-            'activation' => Config::get('admin-auth.activation_enabled'),
-            'roles' => Role::query()->where('guard_name', $this->guard)->get(),
-            'categories' => ServiceCategory::all(),
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
      * @param StoreUser $request
-     * @return array|Application|RedirectResponse|Response|Redirector
+     * @return Response|Application|ResponseFactory
      */
-    public function store(StoreUser $request): Response|array|Redirector|Application|RedirectResponse
+    public function store(StoreUser $request): Response|Application|ResponseFactory
     {
-        // Sanitize input
-        $sanitized = $request->getModifiedData();
+        $user = User::query()->create($request->all());
 
-        //return $sanitized;
+        event(new Registered($user));
 
-        // Store the User
-        $adminUser = User::query()->create($sanitized);
+        $user->roles()->sync(collect($request->input('roles')));
 
-        // But we do have a roles, so we need to attach the roles to the adminUser
-        $adminUser->roles()->sync(collect($request->input('roles', []))->map->id->toArray());
+        $user->services()->sync(collect($request->input('services')));
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/admin-users'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/users');
+        return $this->response($user->with(['roles', 'services'])->find($user->id));
     }
 
     /**
      * @param Request $request
      * @param User $user
-     * @return Application|Factory|View
+     * @return Response|Application|ResponseFactory
      */
-    public function show(Request $request, User $user): View|Factory|Application
+    public function show(Request $request, User $user): Response|Application|ResponseFactory
     {
         Carbon::setWeekStartsAt(CarbonInterface::MONDAY);
 
@@ -121,12 +106,12 @@ class UsersController extends Controller
         $ticketsByDates = Ticket::query()->where('created_at', '>=', $dateStart)
             ->where('created_at', '<=', $dateEnd)
             ->where('user_id', $user->id)
-            ->with('category')
-            ->groupBy(['date', 'category_id'])
+            ->with('service')
+            ->groupBy(['date', 'service_id'])
             ->orderBy('date', 'DESC')
             ->get([
                 DB::raw('Date(created_at) as date'),
-                DB::raw('category_id'),
+                DB::raw('service_id'),
                 DB::raw('COUNT(*) as "tickets"')
             ])->sortBy('date');
 
@@ -138,10 +123,10 @@ class UsersController extends Controller
         $ticketsByCategory = Ticket::query()->where('created_at', '>=', $dateStart)
             ->where('created_at', '<=', $dateEnd)
             ->where('user_id', $user->id)
-            ->with('category')
-            ->groupBy(['category_id'])
+            ->with('service')
+            ->groupBy(['service_id'])
             ->get([
-                DB::raw('category_id'),
+                DB::raw('service_id'),
                 DB::raw('COUNT(*) as "tickets"')
             ]);
 
@@ -150,7 +135,7 @@ class UsersController extends Controller
 
         $totalToday = Ticket::getTodaysByUser($user);
 
-        return view('admin.user.show', [
+        return $this->response([
             'user' => $user,
             'y' => $y,
             'm' => $m,
@@ -162,64 +147,38 @@ class UsersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param User $adminUser
-     * @return Application|Factory|View
-     */
-    public function edit(User $adminUser): Application|Factory|View
-    {
-        $adminUser->load('roles');
-
-        return view('admin.admin-user.edit', [
-            'adminUser' => $adminUser,
-            'activation' => Config::get('admin-auth.activation_enabled'),
-            'roles' => Role::query()->where('guard_name', $this->guard)->get(),
-            'categories' => ServiceCategory::all(),
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
      * @param UpdateUser $request
-     * @param User $adminUser
-     * @return array|Application|RedirectResponse|Response|Redirector
+     * @param User $user
+     * @return Response|Application|ResponseFactory
      */
-    public function update(UpdateUser $request, User $adminUser): Response|array|Redirector|Application|RedirectResponse
+    public function update(UpdateUser $request, User $user): Response|Application|ResponseFactory
     {
-        $sanitized = $request->getModifiedData();
-
-        $adminUser->update($sanitized);
+        $user->update($request->all());
 
         if ($request->input('roles')) {
-            $adminUser->roles()->sync(collect($request->input('roles', []))->map->id->toArray());
+            $user->roles()->sync($request->input('roles', []));
         }
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/admin-users'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+        if ($request->input('services')) {
+            $user->roles()->sync($request->input('services', []));
         }
 
-        return redirect('admin/admin-users');
+        return $this->response($user->with(['roles', 'services'])->find($user->id));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param DestroyUser $request
-     * @param User $adminUser
+     * @param User $user
      * @return bool|RedirectResponse|Response
      * @throws Exception
      */
-    public function destroy(DestroyUser $request, User $adminUser): Response|bool|RedirectResponse
+    public function destroy(DestroyUser $request, User $user): Response|bool|RedirectResponse
     {
-        $adminUser->delete();
+        $user->delete();
 
-        if ($request->ajax()) {
-            return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
-        }
-
-        return redirect()->back();
+        return $this->response();
     }
 
 }

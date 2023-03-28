@@ -16,4 +16,11 @@ class ServiceCenterController extends Controller
             ServiceCenter::query()->get()
         );
     }
+
+    public function list(): Response|Application|ResponseFactory
+    {
+        return $this->response(
+            ServiceCenter::query()->get()
+        );
+    }
 }

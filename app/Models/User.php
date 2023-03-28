@@ -3,10 +3,8 @@
 namespace App\Models;
 
 use App\Notifications\{ResetPasswordNotification, VerifyEmailNotifications};
-use Illuminate\Auth\{MustVerifyEmail, Passwords\CanResetPassword};
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\{Factories\HasFactory,
-    Relations\BelongsTo,
     Relations\BelongsToMany,
     Relations\HasMany,
     SoftDeletes};
@@ -17,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -43,10 +41,10 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'password',
         'first_name',
         'last_name',
-        'activated',
-        'forbidden',
-        'language',
-        'category_id',
+        'patronymic',
+        'is_block',
+        'public_id',
+        'service_center_id'
     ];
 
     protected $dates = [
@@ -58,14 +56,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     protected $appends = [
         'full_name'
     ];
-
-    /**
-     * @return BelongsTo
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(ServiceCategory::class);
-    }
 
     public function tickets(): HasMany
     {

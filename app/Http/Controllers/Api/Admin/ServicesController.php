@@ -119,11 +119,7 @@ class ServicesController extends Controller
     {
         $service->delete();
 
-        if ($request->ajax()) {
-            return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
-        }
-
-        return redirect()->back();
+        return $this->response();
     }
 
     /**
@@ -142,6 +138,6 @@ class ServicesController extends Controller
                 });
         });
 
-        return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+        return $this->response();
     }
 }

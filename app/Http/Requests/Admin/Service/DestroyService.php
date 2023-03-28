@@ -14,8 +14,7 @@ class DestroyService extends FormRequest
      */
     public function authorize()
     {
-        return true;
-        return Gate::allows('admin.service.delete', $this->service);
+        return $this->user()->hasRole('SuperAdmin');
     }
 
     /**

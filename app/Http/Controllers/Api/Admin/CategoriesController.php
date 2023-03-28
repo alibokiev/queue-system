@@ -36,16 +36,7 @@ class CategoriesController extends Controller
     {
         $data = ServiceCategory::query()->get();
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.category.index', ['data' => $data]);
+        return $this->response($data);
     }
 
     /**

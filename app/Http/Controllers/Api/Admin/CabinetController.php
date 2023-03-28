@@ -21,7 +21,7 @@ class CabinetController extends Controller
         $this->middleware(['perm:works']);
     }
 
-    public function index(Request $request)
+    public function index(Request $request): Response|Application|ResponseFactory
     {
         $user = Auth::user();
 
@@ -90,7 +90,7 @@ class CabinetController extends Controller
 
     public function saveTicket(Request $request)
     {
-        $ticket = Ticket::find($request->input('ticketId'));
+        $ticket = Ticket::find($request->input('ticket_id'));
         $ticket->status_id = 3;
         $ticket->completed_at = Carbon::now();
         $ticket->service_id = $request->data['service_id'];
