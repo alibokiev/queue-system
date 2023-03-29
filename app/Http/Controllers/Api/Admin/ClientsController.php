@@ -3,17 +3,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Client\DestroyClient;
-use App\Http\Requests\Admin\Client\IndexClient;
-use App\Http\Requests\Admin\Client\StoreClient;
-use App\Http\Requests\Admin\Client\UpdateClient;
+use App\Http\Requests\Admin\Client\{DestroyClient, IndexClient, StoreClient, UpdateClient};
 use App\Models\Client;
-use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
+use Illuminate\Contracts\{Foundation\Application, Routing\ResponseFactory, View\Factory, View\View};
+use Illuminate\Http\{RedirectResponse, Response};
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 
@@ -30,26 +23,7 @@ class ClientsController extends Controller
     {
         $data = Client::query()->get();
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.client.index', ['data' => $data]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View|Response
-     */
-    public function create(): View|Factory|Response|Application
-    {
-        return view('admin.client.create');
+        return $this->response($data);
     }
 
     /**
@@ -60,13 +34,9 @@ class ClientsController extends Controller
      */
     public function store(StoreClient $request): Response|array|Redirector|Application|RedirectResponse
     {
-        $client = Client::create($request->all());
+        $client = Client::query()->create($request->all());
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/clients/'.$client->id), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/clients');
+        return $this->response($client);
     }
 
     /**
@@ -83,63 +53,21 @@ class ClientsController extends Controller
             'tickets.user',
         ])->find($client->id);
 
-        return view('admin.client.show', [
-            'client' => $client,
-        ]);
+        return $this->response($client);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Client $client
-     * @return Application|Factory|View|Response
-     */
-    public function edit(Client $client): View|Factory|Response|Application
-    {
-
-        return view('admin.client.edit', [
-            'client' => $client,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param UpdateClient $request
-     * @param Client $client
-     * @return array|Application|RedirectResponse|Response|Redirector
-     */
-    public function update(UpdateClient $request, Client $client): Response|array|Redirector|Application|RedirectResponse
+    public function update(UpdateClient $request, Client $client): Response|Application|ResponseFactory
     {
         $client->update($request->all());
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/clients'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
-
-        return redirect('admin/clients');
+        return $this->response($client);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param DestroyClient $request
-     * @param Client $client
-     * @return bool|RedirectResponse|Response
-     * @throws Exception
-     */
-    public function destroy(DestroyClient $request, Client $client): Response|bool|RedirectResponse
+    public function destroy(DestroyClient $request, Client $client): Response|Application|ResponseFactory
     {
         $client->delete();
 
-        if ($request->ajax()) {
-            return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
-        }
-
-        return redirect()->back();
+        return $this->response();
     }
 
     /**

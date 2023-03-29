@@ -31,45 +31,40 @@ class ReceptionController extends Controller
     {
         $serviceCategories = ServiceCategory::with('services')->get();
 
-        $text = '';
-
-        return $this->response(compact('serviceCategories', 'text'));
+        return $this->response($serviceCategories);
     }
 
-    /**
-     * @param Request $request
-     * @return Application|Response|ResponseFactory
-     */
     public function store(Request $request): Application|ResponseFactory|Response
     {
         Client::query()->firstOrCreate(['phone' => $request->input('phone')]);
 
-        $service = Service::findOrFail($request->input('serviceId'));
+        $service = Service::query()->findOrFail($request->input('serviceId'));
 
-        $ticket = Ticket::create([
+        $ticket = Ticket::query()->create([
             'service_id' => $service->id,
             'created_at' => Carbon::now(),
             'status_id' => 1,
-            'comment' => '',
+            'comment' => $request->comment,
             'number' => Ticket::getNumber($service),
         ]);
 
         return $this->response($ticket);
     }
 
-    public function skipAll()
+    public function skipAll(): Response|Application|ResponseFactory
     {
+        if (!auth()->user()->hasRole('SuperAdmin')) {
+            return $this->responseError("У вас нет доступа!", 403);
+        }
+
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $tickets = Ticket::where('created_at', '>=', Carbon::parse($today))
+        Ticket::query()->where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 1)
-            ->get();
+            ->update([
+                'status_id' => 4
+            ]);
 
-        foreach ($tickets as $ticket) {
-            $ticket->status_id = 4;
-            $ticket->save();
-        }
+        return $this->response();
     }
-
-
 }

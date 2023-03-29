@@ -59,7 +59,9 @@ class AuthController extends Controller
     public function logout(Request $request): Application|ResponseFactory|Response
     {
         try {
-            Auth::user()->tokens()->each->delete();
+            Auth::user()->tokens()->each(function ($query) {
+                $query->delete();
+            });
             return $this->response([], "You have successfully logged out.");
         } catch (Exception $e) {
             return $this->responseError('Failed to logout, please try again.', 500);
@@ -72,6 +74,6 @@ class AuthController extends Controller
      */
     public function me(Request $request): Response|Application|ResponseFactory
     {
-        return $this->response($request->user());
+        return $this->response(User::with(['roles', 'services', 'permissions'])->findOrFail($request->user()->id));
     }
 }

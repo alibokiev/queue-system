@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Client extends Model
@@ -18,34 +19,27 @@ class Client extends Model
         'date_of_birth',
     ];
 
-    protected $dates = [
+    protected array $dates = [
         'created_at',
         'updated_at',
     ];
 
-    protected $appends = ['resource_url', 'full_name', 'common_name'];
+    protected $appends = ['full_name', 'common_name'];
 
     public $timestamps = true;
 
-    public function tickets()
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
-    /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/clients/' . $this->getKey());
-    }
-
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
         $fullName = $this->surname . " " . $this->name . " " . $this->second_name;
         return trim($fullName) != "" ? trim($fullName) : "Клиент (ФИО не указано)";
     }
 
-    public function getCommonNameAttribute()
+    public function getCommonNameAttribute(): string
     {
         $fullName = $this->surname . " " . Str::substr($this->name, 0, 1) . ". " . Str::substr($this->second_name, 0, 1) . ".";
         return trim($fullName) != ". ." ? trim($fullName) : "Новый ({$this->phone})";

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Admin\{CabinetController,
     ClientsController,
     ProfileController,
     ReceptionController,
+    ServiceCategoryController,
     ServicesController,
     UsersController};
 use App\Http\Controllers\Api\{AuthController, MonitorController, ServiceCenterController};
@@ -37,8 +38,8 @@ Route::namespace('Api')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::get('/logout', [AuthController::class, 'logout']);
-        Route::post('/profile', [ProfileController::class, 'updateProfile']);
-        Route::post('/password', [ProfileController::class, 'updatePassword']);
+        Route::put('/profile', [ProfileController::class, 'updateProfile']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
         Route::post('/email/resend', [VerificationController::class, 'resend']);
     });
 
@@ -51,6 +52,7 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/reception', [ReceptionController::class, 'index']);
         Route::post('/reception', [ReceptionController::class, 'store']);
+        Route::post('/reception/skip-all', [ReceptionController::class, 'skipAll']);
 
         Route::get('/monitor/', [MonitorController::class, 'index']);
 
@@ -60,17 +62,11 @@ Route::namespace('Api')->group(function () {
         Route::put('/users/{user}', [UsersController::class, 'update'])->where('user', '[0-9]+');
         Route::delete('/users/{user}', [UsersController::class, 'destroy'])->where('user', '[0-9]+');
 
-        Route::get('/categories', [CategoriesController::class, 'index']);
-        Route::get('/categories/create', [CategoriesController::class, 'create']);
-        Route::post('/categories', [CategoriesController::class, 'store']);
-        Route::get('/categories/{category}/edit', [CategoriesController::class, 'edit']);
-        Route::post('/categories/bulk-destroy', [CategoriesController::class, 'bulkDestroy']);
-        Route::post('/categories/{category}', [CategoriesController::class, 'update']);
-        Route::delete('/categories/{category}', [CategoriesController::class, 'destroy']);
-
-        Route::get('/reception', [ReceptionController::class, 'index']);
-        Route::post('/reception', [ReceptionController::class, 'store']);
-        Route::post('/reception/skip-all', [ReceptionController::class, 'skipAll']);
+        Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
+        Route::post('/service-categories', [ServiceCategoryController::class, 'store']);
+        Route::get('/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'show']);
+        Route::put('/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'update']);
+        Route::delete('/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'destroy']);
 
         Route::get('/cabinet', [CabinetController::class, 'index']);
         Route::get('/cabinet/services', [CabinetController::class, 'services']);
@@ -79,28 +75,21 @@ Route::namespace('Api')->group(function () {
         Route::post('/cabinet/save', [CabinetController::class, 'saveTicket']);
 
         Route::get('/clients', [ClientsController::class, 'index']);
-        Route::get('/clients/create', [ClientsController::class, 'create']);
         Route::post('/clients', [ClientsController::class, 'store']);
         Route::get('/clients/{client}', [ClientsController::class, 'show']);
-        Route::get('/clients/{client}/edit', [ClientsController::class, 'edit']);
-        Route::post('/clients/bulk-destroy', [ClientsController::class, 'bulkDestroy']);
         Route::post('/clients/{client}', [ClientsController::class, 'update']);
         Route::delete('/clients/{client}', [ClientsController::class, 'destroy']);
 
-
         Route::get('/services', [ServicesController::class, 'index']);
-        Route::get('/services/create', [ServicesController::class, 'create']);
-        Route::post('/services', [ServicesController::class, ' store']);
-        Route::get('/services/{service}/edit', [ServicesController::class, 'edit']);
-        Route::post('/services/bulk-destroy', [ServicesController::class, 'bulkDestroy']);
+        Route::post('/services', [ServicesController::class, 'store']);
         Route::post('/services/{service}', [ServicesController::class, 'update']);
         Route::delete('/services/{service}', [ServicesController::class, 'destroy']);
 
-        Route::get('/services', [ServiceCenterController::class, 'index']);
-        Route::post('/services', [ServiceCenterController::class, ' store']);
-        Route::post('/services/bulk-destroy', [ServiceCenterController::class, 'bulkDestroy']);
-        Route::post('/services/{service}', [ServiceCenterController::class, 'update']);
-        Route::delete('/services/{service}', [ServiceCenterController::class, 'destroy']);
+        Route::get('/service-centers', [ServiceCenterController::class, 'index']);
+        Route::post('/service-centers', [ServiceCenterController::class, 'store']);
+        Route::post('/service-centers/bulk-destroy', [ServiceCenterController::class, 'bulkDestroy']);
+        Route::post('/service-centers/{service}', [ServiceCenterController::class, 'update']);
+        Route::delete('/service-centers/{service}', [ServiceCenterController::class, 'destroy']);
     });
 });
 

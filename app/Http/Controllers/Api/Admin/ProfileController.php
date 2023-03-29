@@ -64,7 +64,9 @@ class ProfileController extends Controller
             return $this->responseError('Ваш текущий пароль неправильный!');
         }
 
-        $user->update(Hash::make($request->input('password')));
+        $user->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
 
         return $this->response($request->user());
     }
