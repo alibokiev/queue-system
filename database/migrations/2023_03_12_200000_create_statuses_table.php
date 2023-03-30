@@ -29,6 +29,11 @@ return new class extends Migration
                 'color' => 'warning',
             ],
             [
+                'name' => 'invited',
+                'display_name' => 'Приглашен',
+                'color' => 'green',
+            ],
+            [
                 'name' => 'active',
                 'display_name' => 'Обслуживается',
                 'color' => 'success',

@@ -27,26 +27,21 @@ class CabinetController extends Controller
 
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $tickets = Ticket::with(['status', 'user', 'client'])
+        $tickets = Ticket::with(['status', 'client'])
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1, 2])
             ->where('service_id', $user->getServicesId())
             ->orderByDesc('priority')
             ->get();
 
-        $ticket = $user->tickets()->where('created_at', '>=', Carbon::parse($today))
-            ->where('status_id', 2)
-            ->with(['status', 'user', 'client'])
-            ->first();
-
         $completedTickets = Ticket::where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 3)
             ->where('user_id', $user->id)
-            ->with(['status', 'client'])
+            ->with(['status', 'user', 'client'])
             ->orderBy('completed_at', 'desc')
             ->get();
 
-        return $this->response(compact('today', 'user', 'ticket', 'tickets', 'completedTickets'));
+        return $this->response(compact('tickets', 'completedTickets'));
     }
 
     public function services(): Response|Application|ResponseFactory
@@ -80,7 +75,7 @@ class CabinetController extends Controller
 
     public function done(Request $request)
     {
-        $ticket = Ticket::find($request->input('ticketId'));
+        $ticket = Ticket::find($request->input('ticket_id'));
         $ticket->status_id = 3;
         $ticket->completed_at = Carbon::now();
         $ticket->save();

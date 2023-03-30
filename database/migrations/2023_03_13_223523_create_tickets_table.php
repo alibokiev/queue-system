@@ -24,10 +24,12 @@ return new class extends Migration
             $table->timestamp('created_at');
             $table->timestamp('invited_at')->nullable();
             $table->timestamp('completed_at')->nullable();
+            $table->unsignedBigInteger('client_id');
 
             $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('client_id')->references('id')->on('clients');
         });
     }
 

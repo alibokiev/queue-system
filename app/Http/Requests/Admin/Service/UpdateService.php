@@ -31,7 +31,7 @@ class UpdateService extends FormRequest
             'boj' => ['nullable', 'numeric'],
             'hizmat' => ['nullable', 'numeric'],
             'kogaz' => ['nullable', 'numeric'],
-
+            'service_category_id' => ['required', 'exists:service_categories,id']
         ];
     }
 

@@ -36,9 +36,18 @@ class ReceptionController extends Controller
 
     public function store(Request $request): Application|ResponseFactory|Response
     {
-        Client::query()->firstOrCreate(['phone' => $request->input('phone')]);
+        $client = Client::query()->firstOrCreate(['phone' => $request->input('phone')]);
 
-        $service = Service::query()->findOrFail($request->input('serviceId'));
+        $service = Service::query()->findOrFail($request->input('service_id'));
+
+        if (
+            Ticket::query()
+                ->where('client_id', $client->id)
+                ->where('created_at', '>', Carbon::now()->subMinutes(10)->toDateTimeString())
+                ->exists()
+        ) {
+            return $this->responseError("Вы уже есть в очереди!", 400);
+        }
 
         $ticket = Ticket::query()->create([
             'service_id' => $service->id,
@@ -46,6 +55,7 @@ class ReceptionController extends Controller
             'status_id' => 1,
             'comment' => $request->comment,
             'number' => Ticket::getNumber($service),
+            'client_id' => $client->id
         ]);
 
         return $this->response($ticket);

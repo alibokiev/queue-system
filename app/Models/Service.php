@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -22,12 +23,7 @@ class Service extends Model
 
     protected $dates = [
         'created_at',
-        'updated_at',
-
-    ];
-
-    protected $appends = [
-        'resource_url'
+        'updated_at'
     ];
 
     public static function boot(): void
@@ -35,7 +31,9 @@ class Service extends Model
         parent::boot();
 
         self::created(static function ($model){
-            $model->code = 'SRV' . $model->id;
+            if (!$model->code) {
+                $model->code = 'SRV' . $model->id;
+            }
         });
     }
 
@@ -44,8 +42,8 @@ class Service extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function getResourceUrlAttribute(): string|UrlGenerator|Application
+    public function category(): BelongsTo
     {
-        return url('/admin/services/'.$this->getKey());
+        return $this->belongsTo(ServiceCategory::class);
     }
 }

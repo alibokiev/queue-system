@@ -20,7 +20,8 @@ class MonitorController extends Controller
     {
         $tickets = Ticket::query()
             ->with(['user', 'status'])
-//            ->whereNotNull('invited_at')
+            ->where('status', 2)
+            ->whereNotNull('invited_at')
             ->get();
 
         return $this->response($tickets);

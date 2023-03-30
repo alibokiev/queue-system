@@ -31,12 +31,16 @@ class ServicesController extends Controller
     {
         $service = Service::query()->create($request->all());
 
+        $service->category()->associate($request->input('service_category_id'));
+
         return $this->response($service);
     }
 
     public function update(UpdateService $request, Service $service): Response|Application|ResponseFactory
     {
         $service->update($request->all());
+
+        $service->category()->associate($request->input('service_category_id'));
 
         return $this->response($service);
     }
