@@ -21,9 +21,18 @@ class ClientsController extends Controller
      */
     public function index(IndexClient $request): View|Factory|Response|array|Application
     {
-        $data = Client::query()->get();
+        $search = $request->input('search');
 
-        return $this->response($data);
+        $clients = Client::query();
+
+        if ($search) {
+            $clients->where('phone', 'like', "%$search")
+                ->orWhere('name', 'like', "%$search")
+                ->orWhere('surname', 'like', "%$search")
+                ->orWhere('second_name', 'like', "%$search");
+        }
+
+        return $this->responsePaginate($clients->paginate());
     }
 
     /**

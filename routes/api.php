@@ -26,7 +26,7 @@ Route::get('/', function () {
 Route::namespace('Api')->group(function () {
 
     Route::middleware('guest')->group(function () {
-        Route::get('/service-centers', [ServiceCenterController::class, 'list']);
+        Route::get('/service-centers/list', [ServiceCenterController::class, 'list']);
 
         Route::post('/register', [RegisterController::class, 'register'])->name('register');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -87,7 +87,6 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
         Route::post('/service-centers', [ServiceCenterController::class, 'store']);
-        Route::post('/service-centers/bulk-destroy', [ServiceCenterController::class, 'bulkDestroy']);
         Route::post('/service-centers/{service}', [ServiceCenterController::class, 'update']);
         Route::delete('/service-centers/{service}', [ServiceCenterController::class, 'destroy']);
     });

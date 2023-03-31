@@ -22,9 +22,16 @@ class ServicesController extends Controller
 {
     public function index(IndexService $request): Response|Application|ResponseFactory
     {
-        $data = Service::query()->get();
+        $search = $request->input('search');
 
-        return $this->response($data);
+        $services = Service::query();
+
+        if ($search) {
+            $services->where('name', 'like', "%$search")
+                ->orWhere('code', 'like', "%$search");
+        }
+
+        return $this->response($services->get());
     }
 
     public function store(StoreService $request): Response|Application|ResponseFactory
