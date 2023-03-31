@@ -38,7 +38,9 @@ class ServicesController extends Controller
     {
         $service = Service::query()->create($request->all());
 
-        $service->category()->associate($request->input('service_category_id'));
+        if ($request->input('service_category_id')) {
+            $service->category()->associate($request->input('service_category_id'));
+        }
 
         return $this->response($service);
     }
@@ -47,8 +49,9 @@ class ServicesController extends Controller
     {
         $service->update($request->all());
 
-        $service->category()->associate($request->input('service_category_id'));
-
+        if ($request->input('service_category_id')) {
+            $service->category()->associate($request->input('service_category_id'));
+        }
         return $this->response($service);
     }
 
