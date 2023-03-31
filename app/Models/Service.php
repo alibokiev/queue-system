@@ -18,7 +18,8 @@ class Service extends Model
         'boj',
         'code',
         'hizmat',
-        'kogaz'
+        'kogaz',
+        'category_id'
     ];
 
     protected $dates = [

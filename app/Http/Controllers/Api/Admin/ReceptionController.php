@@ -29,9 +29,14 @@ class ReceptionController extends Controller
      */
     public function index(): Response|Application|ResponseFactory
     {
-        $serviceCategories = ServiceCategory::with('services')->get();
+        $serviceCategories = ServiceCategory::query()
+            ->whereHas('services')
+            ->with('services')
+            ->get();
 
-        return $this->response($serviceCategories);
+        $services = Service::query()->whereNull('category_id')->get();
+
+        return $this->response($serviceCategories->mergeRecursive($services));
     }
 
     public function store(Request $request): Application|ResponseFactory|Response

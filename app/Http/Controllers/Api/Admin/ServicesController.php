@@ -36,10 +36,10 @@ class ServicesController extends Controller
 
     public function store(StoreService $request): Response|Application|ResponseFactory
     {
-        $service = Service::query()->create($request->all());
+        $service = Service::query()->firstOrCreate($request->all());
 
-        if ($request->input('service_category_id')) {
-            $service->category()->associate($request->input('service_category_id'));
+        if ($request->input('category_id')) {
+            $service->category()->associate($request->input('category_id'));
         }
 
         return $this->response($service);
@@ -49,8 +49,8 @@ class ServicesController extends Controller
     {
         $service->update($request->all());
 
-        if ($request->input('service_category_id')) {
-            $service->category()->associate($request->input('service_category_id'));
+        if ($request->input('category_id')) {
+            $service->category()->associate($request->input('category_id'));
         }
         return $this->response($service);
     }
@@ -58,25 +58,6 @@ class ServicesController extends Controller
     public function destroy(DestroyService $request, Service $service): Response|Application|ResponseFactory
     {
         $service->delete();
-
-        return $this->response();
-    }
-
-    /**
-     * Remove the specified resources from storage.
-     *
-     * @param DestroyService $request
-     * @return Response
-     */
-    public function bulkDestroy(DestroyService $request) : Response
-    {
-        DB::transaction(static function () use ($request) {
-            collect($request->data['ids'])
-                ->chunk(1000)
-                ->each(static function ($bulkChunk) {
-                    Service::query()->whereIn('id', $bulkChunk)->delete();
-                });
-        });
 
         return $this->response();
     }
