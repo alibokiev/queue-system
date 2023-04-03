@@ -36,11 +36,12 @@ trait ApiResponse
         ]);
     }
 
-    public function responseUnsuccess(): Response|Application|ResponseFactory
+    public function responseUnsuccess(string $message = ''): Response|Application|ResponseFactory
     {
         $this->success = false;
+        $this->message = $message;
 
-        return response();
+        return $this->response();
     }
 
     /**

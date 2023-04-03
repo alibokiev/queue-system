@@ -52,6 +52,7 @@ class CabinetController extends Controller
     public function accept(): Application|ResponseFactory|Response
     {
         $user = Auth::user();
+
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
         $ticket = Ticket::with(['status', 'user', 'client'])
@@ -70,7 +71,7 @@ class CabinetController extends Controller
             return $this->response($ticket);
         }
 
-        return $this->responseUnsuccess();
+        return $this->responseUnsuccess('');
     }
 
     public function done(Request $request)
