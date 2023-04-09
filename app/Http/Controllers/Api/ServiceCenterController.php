@@ -51,9 +51,9 @@ class ServiceCenterController extends Controller
 
     public function destroy(ServiceCenter $serviceCenter): Response|Application|ResponseFactory
     {
-        $serviceCenter->delete();
+        $result = $serviceCenter->delete();
 
-        return $this->response();
+        return $this->response(['success' => $result]);
     }
 
     public function list(): Response|Application|ResponseFactory

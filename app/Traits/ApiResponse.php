@@ -28,8 +28,8 @@ trait ApiResponse
     {
         return response([
             'meta' => [
-                'success' => $this->success,
-                'code' => $this->code,
+                'success' => $data['success'] ?? $this->success,
+                'code' => $data['code'] ?? $this->code,
                 'message' => ($message != '') ? $message : $this->message
             ],
             'response' => $data ?? []
