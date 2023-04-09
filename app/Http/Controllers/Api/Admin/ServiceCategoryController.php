@@ -40,7 +40,11 @@ class ServiceCategoryController extends Controller
 
     public function destroy(ServiceCategory $serviceCategory): Response|Application|ResponseFactory
     {
-        $serviceCategory->delete();
+        $result = $serviceCategory->delete();
+
+        if (!$result) {
+            return $this->responseError('Something went wrong!');
+        }
 
         return $this->response();
     }
