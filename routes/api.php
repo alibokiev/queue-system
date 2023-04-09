@@ -70,6 +70,7 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/cabinet', [CabinetController::class, 'index']);
         Route::get('/cabinet/services', [CabinetController::class, 'services']);
+        Route::post('/cabinet/invite', [CabinetController::class, 'invite']);
         Route::post('/cabinet/accept', [CabinetController::class, 'accept']);
         Route::post('/cabinet/done', [CabinetController::class, 'done']);
         Route::post('/cabinet/save', [CabinetController::class, 'saveTicket']);
