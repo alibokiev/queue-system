@@ -1,16 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\HomeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\{ConfirmPasswordController,
+use App\Http\Controllers\Auth\{
     ForgotPasswordController,
-    LoginController,
     RegisterController,
     ResetPasswordController,
     VerificationController};
 use App\Http\Controllers\Api\Admin\{CabinetController,
-    CategoriesController,
     ClientsController,
     ProfileController,
     ReceptionController,
@@ -45,10 +42,6 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
-
-        Route::get('/cabinet', [CabinetController::class, 'index']);
-        Route::post('/cabinet/accept', [CabinetController::class, 'accept']);
-        Route::post('/cabinet/done', [CabinetController::class, 'done']);
 
         Route::get('/reception', [ReceptionController::class, 'index']);
         Route::post('/reception', [ReceptionController::class, 'store']);

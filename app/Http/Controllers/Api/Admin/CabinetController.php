@@ -99,7 +99,7 @@ class CabinetController extends Controller
         }
 
         $ticket = Ticket::with(['status', 'user', 'client'])
-            ->whereIn('status_id', 2)
+            ->where('status_id', 2)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
