@@ -87,8 +87,8 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
         Route::post('/service-centers', [ServiceCenterController::class, 'store']);
-        Route::put('/service-centers/{service}', [ServiceCenterController::class, 'update']);
-        Route::delete('/service-centers/{service}', [ServiceCenterController::class, 'destroy']);
+        Route::put('/service-centers/{serviceCenter}', [ServiceCenterController::class, 'update']);
+        Route::delete('/service-centers/{serviceCenter}', [ServiceCenterController::class, 'destroy']);
     });
 });
 

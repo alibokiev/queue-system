@@ -53,7 +53,11 @@ class ServiceCenterController extends Controller
     {
         $result = $serviceCenter->delete();
 
-        return $this->response(['success' => $result]);
+        if (!$result) {
+            return $this->responseError('Something went wrong!');
+        }
+
+        return $this->response();
     }
 
     public function list(): Response|Application|ResponseFactory
