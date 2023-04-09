@@ -36,7 +36,7 @@ class ReceptionController extends Controller
 
         $services = Service::query()->whereNull('category_id')->get();
 
-        return $this->response($serviceCategories->mergeRecursive(['services' => $services]));
+        return $this->response(['services' => $serviceCategories->mergeRecursive($services)]);
     }
 
     public function store(Request $request): Application|ResponseFactory|Response
