@@ -160,7 +160,7 @@ class UsersController extends Controller
         }
 
         if ($request->input('services')) {
-            $user->roles()->sync($request->input('services', []));
+            $user->services()->sync($request->input('services', []));
         }
 
         return $this->response($user->with(['roles', 'services'])->find($user->id));
