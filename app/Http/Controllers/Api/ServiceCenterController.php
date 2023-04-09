@@ -53,7 +53,7 @@ class ServiceCenterController extends Controller
     {
         $serviceCenter->delete();
 
-        return $this->response($serviceCenter);
+        return $this->response();
     }
 
     public function list(): Response|Application|ResponseFactory
