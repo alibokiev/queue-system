@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class ServiceCenterController extends Controller
 {
@@ -26,11 +27,23 @@ class ServiceCenterController extends Controller
 
     public function store(Request $request): Response|Application|ResponseFactory
     {
-        return $this->response(ServiceCenter::query()->create($request->all()));
+        $request->validate([
+            'name' => 'required|string',
+            'address' => 'required|string'
+        ]);
+
+        $request->merge(['slug' => Str::slug($request->name)]);
+
+        return $this->response(ServiceCenter::query()->firstOrCreate($request->all()));
     }
 
     public function update(Request $request, ServiceCenter $serviceCenter): Response|Application|ResponseFactory
     {
+        $request->validate([
+            'name' => 'sometimes|string',
+            'address' => 'sometimes|string'
+        ]);
+
         $serviceCenter->update($request->all());
 
         return $this->response($serviceCenter);

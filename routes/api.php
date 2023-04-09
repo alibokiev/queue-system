@@ -77,17 +77,17 @@ Route::namespace('Api')->group(function () {
         Route::get('/clients', [ClientsController::class, 'index']);
         Route::post('/clients', [ClientsController::class, 'store']);
         Route::get('/clients/{client}', [ClientsController::class, 'show']);
-        Route::post('/clients/{client}', [ClientsController::class, 'update']);
+        Route::put('/clients/{client}', [ClientsController::class, 'update']);
         Route::delete('/clients/{client}', [ClientsController::class, 'destroy']);
 
         Route::get('/services', [ServicesController::class, 'index']);
         Route::post('/services', [ServicesController::class, 'store']);
-        Route::post('/services/{service}', [ServicesController::class, 'update']);
+        Route::put('/services/{service}', [ServicesController::class, 'update']);
         Route::delete('/services/{service}', [ServicesController::class, 'destroy']);
 
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
         Route::post('/service-centers', [ServiceCenterController::class, 'store']);
-        Route::post('/service-centers/{service}', [ServiceCenterController::class, 'update']);
+        Route::put('/service-centers/{service}', [ServiceCenterController::class, 'update']);
         Route::delete('/service-centers/{service}', [ServiceCenterController::class, 'destroy']);
     });
 });

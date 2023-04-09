@@ -18,15 +18,6 @@ class ServiceCenter extends Model
         'updated_at'
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        self::creating(function ($model) {
-            $model->slug = Str::slug($model->name);
-        });
-    }
-
     public function user(): HasMany
     {
         return $this->hasMany(User::class);
