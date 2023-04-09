@@ -33,7 +33,7 @@ trait ApiResponse
                 'message' => ($message != '') ? $message : $this->message
             ],
             'response' => $data ?? []
-        ]);
+        ], $this->code);
     }
 
     public function responseUnsuccess(string $message = ''): Response|Application|ResponseFactory

@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($e instanceof ModelNotFoundException) {
-            return $this->responseError("No query results in {$e->getModel()}", $e->getCode());
+            return $this->responseError($e->getMessage(), ResponseAlias::HTTP_NOT_FOUND);
         }
 
         if ($e instanceof ValidationException) {
