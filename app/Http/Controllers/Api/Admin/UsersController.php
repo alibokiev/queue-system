@@ -20,6 +20,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Exception;
 use Illuminate\Http\Request;
@@ -77,6 +78,8 @@ class UsersController extends Controller
      */
     public function store(StoreUser $request): Response|Application|ResponseFactory
     {
+        $request->merge(['password' => Hash::make($request->input('password'))]);
+
         $user = User::query()->create($request->all());
 
         event(new Registered($user));
