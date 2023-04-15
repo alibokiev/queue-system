@@ -10,7 +10,8 @@ class ServiceCenter extends Model
 {
     protected $fillable = [
         'name',
-        'address'
+        'address',
+        'slug'
     ];
 
     protected $hidden = [
