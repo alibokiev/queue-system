@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Service\UpdateService;
 use App\Models\Service;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ServicesController extends Controller
@@ -31,6 +32,11 @@ class ServicesController extends Controller
     public function list(): Response|Application|ResponseFactory
     {
         return $this->response(Service::all());
+    }
+
+    public function show(Request $request, Service $service): Response|Application|ResponseFactory
+    {
+        return $this->response($service);
     }
 
     public function store(StoreService $request): Response|Application|ResponseFactory

@@ -75,6 +75,8 @@ Route::namespace('Api')->group(function () {
         Route::delete('/clients/{client}', [ClientsController::class, 'destroy']);
 
         Route::get('/services', [ServicesController::class, 'index']);
+        Route::get('/services/{service}', [ServicesController::class, 'list']);
+        Route::get('/services/list', [ServicesController::class, 'list']);
         Route::post('/services', [ServicesController::class, 'store']);
         Route::put('/services/{service}', [ServicesController::class, 'update']);
         Route::delete('/services/{service}', [ServicesController::class, 'destroy']);
