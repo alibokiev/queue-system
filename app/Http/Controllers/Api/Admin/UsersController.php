@@ -155,7 +155,9 @@ class UsersController extends Controller
     {
         $user->update($request->all());
 
-        $user->roles()->sync($request->input('roles', []));
+        if ($user->id != auth()->user()->id) {
+            $user->roles()->sync($request->input('roles', []));
+        }
 
         $user->services()->sync($request->input('services', []));
 
