@@ -8,15 +8,9 @@ use App\Http\Requests\Admin\Service\IndexService;
 use App\Http\Requests\Admin\Service\StoreService;
 use App\Http\Requests\Admin\Service\UpdateService;
 use App\Models\Service;
-use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
 
 class ServicesController extends Controller
 {
@@ -31,7 +25,12 @@ class ServicesController extends Controller
                 ->orWhere('code', 'like', "%$search");
         }
 
-        return $this->response($services->get());
+        return $this->responsePaginate($services->paginate($request->input('limit', 15)));
+    }
+
+    public function list(): Response|Application|ResponseFactory
+    {
+        return $this->response(Service::all());
     }
 
     public function store(StoreService $request): Response|Application|ResponseFactory
