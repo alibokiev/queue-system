@@ -27,7 +27,7 @@ class CabinetController extends Controller
 
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $tickets = Ticket::with(['status', 'client'])
+        $tickets = Ticket::with(['status', 'user', 'client', 'service'])
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1, 2])
             ->where('service_id', $user->getServicesId())
@@ -37,16 +37,15 @@ class CabinetController extends Controller
         $currentTicket = Ticket::where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 3)
             ->where('user_id', $user->id)
-            ->with(['status', 'user', 'client'])
+            ->with(['status', 'user', 'client', 'service'])
             ->get();
 
         $completedTickets = Ticket::where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 4)
             ->where('user_id', $user->id)
-            ->with(['status', 'user', 'client'])
+            ->with(['status', 'user', 'client', 'service'])
             ->orderBy('completed_at', 'desc')
             ->get();
-
 
         return $this->response(compact('tickets', 'currentTicket', 'completedTickets'));
     }
