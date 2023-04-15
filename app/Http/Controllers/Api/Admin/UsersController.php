@@ -81,9 +81,9 @@ class UsersController extends Controller
 
         event(new Registered($user));
 
-        $user->roles()->sync(collect($request->input('roles')));
+        $user->roles()->sync($request->input('roles'));
 
-        $user->services()->sync(collect($request->input('services')));
+        $user->services()->sync($request->input('services'));
 
         return $this->response($user->with(['roles', 'services'])->find($user->id));
     }
@@ -155,13 +155,9 @@ class UsersController extends Controller
     {
         $user->update($request->all());
 
-        if ($request->input('roles')) {
-            $user->roles()->sync($request->input('roles', []));
-        }
+        $user->roles()->sync($request->input('roles', []));
 
-        if ($request->input('services')) {
-            $user->services()->sync($request->input('services', []));
-        }
+        $user->services()->sync($request->input('services', []));
 
         return $this->response($user->with(['roles', 'services'])->find($user->id));
     }
