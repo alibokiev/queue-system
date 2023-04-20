@@ -20,6 +20,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Exception;
 use Illuminate\Http\Request;
@@ -77,13 +78,15 @@ class UsersController extends Controller
      */
     public function store(StoreUser $request): Response|Application|ResponseFactory
     {
+        $request->merge(['password' => Hash::make($request->input('password'))]);
+
         $user = User::query()->create($request->all());
 
         event(new Registered($user));
 
-        $user->roles()->sync(collect($request->input('roles')));
+        $user->roles()->sync($request->input('roles'));
 
-        $user->services()->sync(collect($request->input('services')));
+        $user->services()->sync($request->input('services'));
 
         return $this->response($user->with(['roles', 'services'])->find($user->id));
     }
@@ -155,13 +158,11 @@ class UsersController extends Controller
     {
         $user->update($request->all());
 
-        if ($request->input('roles')) {
+        if ($user->id != auth()->user()->id) {
             $user->roles()->sync($request->input('roles', []));
         }
 
-        if ($request->input('services')) {
-            $user->roles()->sync($request->input('services', []));
-        }
+        $user->services()->sync($request->input('services', []));
 
         return $this->response($user->with(['roles', 'services'])->find($user->id));
     }

@@ -30,8 +30,7 @@ class StoreService extends FormRequest
             'name' => ['required', 'string'],
             'boj' => ['nullable', 'numeric'],
             'hizmat' => ['nullable', 'numeric'],
-            'kogaz' => ['nullable', 'numeric'],
-            'service_category_id' => ['required', 'exists:service_categories,id']
+            'kogaz' => ['nullable', 'numeric']
         ];
     }
 }

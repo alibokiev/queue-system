@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -73,7 +74,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($e instanceof ModelNotFoundException) {
-            return $this->responseError("No query results in {$e->getModel()}", $e->getCode());
+            return $this->responseError($e->getMessage(), ResponseAlias::HTTP_NOT_FOUND);
         }
 
         if ($e instanceof ValidationException) {
@@ -82,6 +83,10 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof HttpException) {
             return $this->responseError($e->getMessage(), $e->getStatusCode());
+        }
+
+        if ($e instanceof QueryException) {
+            return $this->responseError($e->getMessage());
         }
 
         return parent::render($request, $e);

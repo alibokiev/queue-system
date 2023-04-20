@@ -5,14 +5,12 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
@@ -21,10 +19,10 @@ class ProfileController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @return array|Application|RedirectResponse|Redirector
+     * @return Response|Application|ResponseFactory
      * @throws ValidationException
      */
-    public function updateProfile(Request $request): array|Redirector|Application|RedirectResponse
+    public function updateProfile(Request $request): Response|Application|ResponseFactory
     {
         $user = $request->user();
 

@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class ServiceCenter extends Model
 {
     protected $fillable = [
         'name',
-        'address'
+        'address',
+        'slug'
     ];
 
     protected $hidden = [

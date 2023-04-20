@@ -8,30 +8,44 @@ use App\Http\Requests\Admin\Service\IndexService;
 use App\Http\Requests\Admin\Service\StoreService;
 use App\Http\Requests\Admin\Service\UpdateService;
 use App\Models\Service;
-use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
 
 class ServicesController extends Controller
 {
     public function index(IndexService $request): Response|Application|ResponseFactory
     {
-        $data = Service::query()->get();
+        $search = $request->input('search');
 
-        return $this->response($data);
+        $services = Service::query();
+
+        if ($search) {
+            $services->where('name', 'like', "%$search")
+                ->orWhere('code', 'like', "%$search");
+        }
+
+        return $this->responsePaginate($services->paginate($request->input('limit', 15)));
+    }
+
+    public function list(): Response|Application|ResponseFactory
+    {
+        return $this->response(Service::all());
+    }
+
+    public function show(Request $request, Service $service): Response|Application|ResponseFactory
+    {
+        return $this->response($service);
     }
 
     public function store(StoreService $request): Response|Application|ResponseFactory
     {
-        $service = Service::query()->create($request->all());
+        $service = Service::query()->firstOrCreate($request->all());
 
-        $service->category()->associate($request->input('service_category_id'));
+        if ($request->input('category_id')) {
+            $service->category()->associate($request->input('category_id'));
+        }
 
         return $this->response($service);
     }
@@ -40,33 +54,15 @@ class ServicesController extends Controller
     {
         $service->update($request->all());
 
-        $service->category()->associate($request->input('service_category_id'));
-
+        if ($request->input('category_id')) {
+            $service->category()->associate($request->input('category_id'));
+        }
         return $this->response($service);
     }
 
     public function destroy(DestroyService $request, Service $service): Response|Application|ResponseFactory
     {
         $service->delete();
-
-        return $this->response();
-    }
-
-    /**
-     * Remove the specified resources from storage.
-     *
-     * @param DestroyService $request
-     * @return Response
-     */
-    public function bulkDestroy(DestroyService $request) : Response
-    {
-        DB::transaction(static function () use ($request) {
-            collect($request->data['ids'])
-                ->chunk(1000)
-                ->each(static function ($bulkChunk) {
-                    Service::query()->whereIn('id', $bulkChunk)->delete();
-                });
-        });
 
         return $this->response();
     }

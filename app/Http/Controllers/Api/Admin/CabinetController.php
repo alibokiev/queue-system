@@ -27,21 +27,27 @@ class CabinetController extends Controller
 
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
-        $tickets = Ticket::with(['status', 'client'])
+        $tickets = Ticket::with(['status', 'user', 'client', 'service'])
             ->where('created_at', '>=', Carbon::parse($today))
             ->whereIn('status_id', [1, 2])
             ->where('service_id', $user->getServicesId())
             ->orderByDesc('priority')
             ->get();
 
-        $completedTickets = Ticket::where('created_at', '>=', Carbon::parse($today))
+        $currentTicket = Ticket::where('created_at', '>=', Carbon::parse($today))
             ->where('status_id', 3)
             ->where('user_id', $user->id)
-            ->with(['status', 'user', 'client'])
+            ->with(['status', 'user', 'client', 'service'])
+            ->get();
+
+        $completedTickets = Ticket::where('created_at', '>=', Carbon::parse($today))
+            ->where('status_id', 4)
+            ->where('user_id', $user->id)
+            ->with(['status', 'user', 'client', 'service'])
             ->orderBy('completed_at', 'desc')
             ->get();
 
-        return $this->response(compact('tickets', 'completedTickets'));
+        return $this->response(compact('tickets', 'currentTicket', 'completedTickets'));
     }
 
     public function services(): Response|Application|ResponseFactory
@@ -49,20 +55,55 @@ class CabinetController extends Controller
         return $this->response(Service::all());
     }
 
-    public function accept(): Application|ResponseFactory|Response
+    public function invite(): Application|ResponseFactory|Response
     {
         $user = Auth::user();
+
+        if (Ticket::query()->where('status_id', 2)
+            ->where('user_id', $user->id)
+            ->exists()
+        ) {
+            return $this->responseError('У вас приглашенный клиент.');
+        }
+
         $today = Carbon::now()->toDateString() . " 00:00:00";
 
         $ticket = Ticket::with(['status', 'user', 'client'])
             ->where('created_at', '>=', Carbon::parse($today))
-            ->whereIn('status_id', [1])
+            ->where('status_id', 1)
             ->where('service_id', $user->getServicesId())
             ->orderByDesc('priority')
-            ->first();
+            ->firstOrFail();
 
         if (!is_null($ticket)) {
             $ticket->status_id = 2;
+            $ticket->user_id = $user->id;
+            $ticket->save();
+
+            return $this->response($ticket);
+        }
+
+        return $this->responseUnsuccess('Something went wrong!');
+    }
+
+    public function accept(): Application|ResponseFactory|Response
+    {
+        $user = Auth::user();
+
+        if (Ticket::query()->where('status_id', 3)
+            ->where('user_id', $user->id)
+            ->exists()
+        ) {
+            return $this->responseError('У вас есть клиент для обслуживание.');
+        }
+
+        $ticket = Ticket::with(['status', 'user', 'client'])
+            ->where('status_id', 2)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        if (!is_null($ticket)) {
+            $ticket->status_id = 3;
             $ticket->user_id = $user->id;
             $ticket->invited_at = Carbon::now();
             $ticket->save();
@@ -70,17 +111,25 @@ class CabinetController extends Controller
             return $this->response($ticket);
         }
 
-        return $this->responseUnsuccess();
+        return $this->responseUnsuccess('Something went wrong!');
     }
 
-    public function done(Request $request)
+    public function done(Request $request): Response|Application|ResponseFactory
     {
-        $ticket = Ticket::find($request->input('ticket_id'));
-        $ticket->status_id = 3;
-        $ticket->completed_at = Carbon::now();
-        $ticket->save();
+        $ticket = Ticket::query()
+            ->where('user_id', $request->user()->id)
+            ->where('status_id', 3)
+            ->firstOrFail();
 
-        $this->response();
+        if (!is_null($ticket)) {
+            $ticket->status_id = 4;
+            $ticket->completed_at = Carbon::now();
+            $ticket->save();
+
+            return $this->response($ticket);
+        }
+
+        return $this->responseUnsuccess('Something went wrong!');
     }
 
     public function saveTicket(Request $request)

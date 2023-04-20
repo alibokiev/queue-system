@@ -1,16 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\HomeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\{ConfirmPasswordController,
+use App\Http\Controllers\Auth\{
     ForgotPasswordController,
-    LoginController,
     RegisterController,
     ResetPasswordController,
     VerificationController};
 use App\Http\Controllers\Api\Admin\{CabinetController,
-    CategoriesController,
     ClientsController,
     ProfileController,
     ReceptionController,
@@ -26,7 +23,7 @@ Route::get('/', function () {
 Route::namespace('Api')->group(function () {
 
     Route::middleware('guest')->group(function () {
-        Route::get('/service-centers', [ServiceCenterController::class, 'list']);
+        Route::get('/service-centers/list', [ServiceCenterController::class, 'list']);
 
         Route::post('/register', [RegisterController::class, 'register'])->name('register');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -45,10 +42,6 @@ Route::namespace('Api')->group(function () {
 
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/home', [HomeController::class, 'index']);
-
-        Route::get('/cabinet', [CabinetController::class, 'index']);
-        Route::post('/cabinet/accept', [CabinetController::class, 'accept']);
-        Route::post('/cabinet/done', [CabinetController::class, 'done']);
 
         Route::get('/reception', [ReceptionController::class, 'index']);
         Route::post('/reception', [ReceptionController::class, 'store']);
@@ -70,6 +63,7 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/cabinet', [CabinetController::class, 'index']);
         Route::get('/cabinet/services', [CabinetController::class, 'services']);
+        Route::post('/cabinet/invite', [CabinetController::class, 'invite']);
         Route::post('/cabinet/accept', [CabinetController::class, 'accept']);
         Route::post('/cabinet/done', [CabinetController::class, 'done']);
         Route::post('/cabinet/save', [CabinetController::class, 'saveTicket']);
@@ -77,19 +71,20 @@ Route::namespace('Api')->group(function () {
         Route::get('/clients', [ClientsController::class, 'index']);
         Route::post('/clients', [ClientsController::class, 'store']);
         Route::get('/clients/{client}', [ClientsController::class, 'show']);
-        Route::post('/clients/{client}', [ClientsController::class, 'update']);
+        Route::put('/clients/{client}', [ClientsController::class, 'update']);
         Route::delete('/clients/{client}', [ClientsController::class, 'destroy']);
 
         Route::get('/services', [ServicesController::class, 'index']);
+        Route::get('/services/{service}', [ServicesController::class, 'list']);
+        Route::get('/services/list', [ServicesController::class, 'list']);
         Route::post('/services', [ServicesController::class, 'store']);
-        Route::post('/services/{service}', [ServicesController::class, 'update']);
+        Route::put('/services/{service}', [ServicesController::class, 'update']);
         Route::delete('/services/{service}', [ServicesController::class, 'destroy']);
 
         Route::get('/service-centers', [ServiceCenterController::class, 'index']);
         Route::post('/service-centers', [ServiceCenterController::class, 'store']);
-        Route::post('/service-centers/bulk-destroy', [ServiceCenterController::class, 'bulkDestroy']);
-        Route::post('/service-centers/{service}', [ServiceCenterController::class, 'update']);
-        Route::delete('/service-centers/{service}', [ServiceCenterController::class, 'destroy']);
+        Route::put('/service-centers/{serviceCenter}', [ServiceCenterController::class, 'update']);
+        Route::delete('/service-centers/{serviceCenter}', [ServiceCenterController::class, 'destroy']);
     });
 });
 
